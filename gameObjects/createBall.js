@@ -1,4 +1,4 @@
-function createBall(scene, x, y, velocity = null) {
+function createBall(scene, x, y) {
     const ball = scene.matter.add.image(x, y, "ball");
     ball.setCircle(25);
     ball.setFriction(0.0);

@@ -9,23 +9,30 @@ let balls = [];
 
 function preload() {
     this.load.image("ball", "assets/ball.png");
+    this.load.image("stick", "assets/stick.png");
 }
 
 function create() {
-    ball1 = createBall(this, 100, 310);
+    ball1 = createBall(this, 600, 310);
     ball2 = createBall(this, 1280, 300);
-    ball3 = createBall(this, 850, 340);
-    ball4 = createBall(this, 850, 260);
+    ball3 = createBall(this, 950, 340);
+    ball4 = createBall(this, 950, 260);
 
     balls = [ball1, ball2, ball3, ball4];
 
-    ball1.setVelocityX(13);
+    stick = createStick(this, 300, 700);
 
     this.matter.world.setBounds(0, 0, 1280, 720, 100, true, true, true, true);
+
+    this.input.on("pointermove", (pointer) => {
+        updateStickPosition(pointer);
+    });
 }
 
 function update() {
     balls.forEach((ball) => {
+        updateStickPosition(this.input.activePointer);
+
         const velocity = ball.body.velocity;
         const speed = Math.sqrt(velocity.x ** 2 + velocity.y ** 2);
 
@@ -61,4 +68,19 @@ function update() {
             ball.setVelocity(velocity.x * bounceLoss, -velocity.y * bounceLoss);
         }
     });
+}
+
+function updateStickPosition(pointer) {
+    const dx = pointer.x - ball1.x;
+    const dy = pointer.y - ball1.y;
+    const angle = Math.atan2(dy, dx);
+
+    // Set rotation to point from ball to opposite side of mouse
+    stick.rotation = angle + -1.6;
+    // console.log(angle);
+
+    // Offset the stick to the opposite side of the pointer (behind ball)
+    const distance = 30; // Adjust this for how far back the stick sits
+    stick.x = ball1.x + Math.cos(angle) * distance;
+    stick.y = ball1.y + Math.sin(angle) * distance;
 }
