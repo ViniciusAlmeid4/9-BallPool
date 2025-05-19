@@ -11,6 +11,7 @@ let pockets;
 function preload() {
     this.load.image("ball", "assets/ball.png");
     this.load.image("pocket", "assets/pocket.png");
+    this.load.image("stick", "assets/stick.png");
 }
 
 function create() {
@@ -21,8 +22,13 @@ function create() {
 
     this.matter.world.setBounds(0, 0, 1280, 720, 100, true, true, true, true);
 
+    this.input.on("pointermove", (pointer) => {
+        updateStickPosition(pointer);
+    });
+
     balls = createBalls(this);
     pockets = createPockets(this);
+    stick = createStick(this, 300, 700);
 
     setTimeout(() => {
         balls[0].setVelocity(20, 0);
@@ -32,6 +38,8 @@ function create() {
         const decay = 0.999; // Decay factor (closer to 1 = slower stop)
 
         balls.forEach((ball) => {
+        updateStickPosition(this.input.activePointer);
+
             const vx = ball.body.velocity.x;
             const vy = ball.body.velocity.y;
             const speed = Math.hypot(vx, vy);
@@ -85,3 +93,18 @@ function create() {
 }
 
 function update() {}
+
+function updateStickPosition(pointer) {
+    const dx = pointer.x - ball1.x;
+    const dy = pointer.y - ball1.y;
+    const angle = Math.atan2(dy, dx);
+
+    // Set rotation to point from ball to opposite side of mouse
+    stick.rotation = angle + -1.6;
+    // console.log(angle);
+
+    // Offset the stick to the opposite side of the pointer (behind ball)
+    const distance = 30; // Adjust this for how far back the stick sits
+    stick.x = ball1.x + Math.cos(angle) * distance;
+    stick.y = ball1.y + Math.sin(angle) * distance;
+}
