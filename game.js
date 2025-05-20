@@ -7,8 +7,8 @@ const config = {
         default: "matter",
         matter: {
             debug: true,
-            gravity: { y: 0 }
-        }
+            gravity: { y: 0 },
+        },
     },
     scene: mainScene,
 };
