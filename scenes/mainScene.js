@@ -4,57 +4,84 @@ const mainScene = {
     update,
 };
 
-const collisionCooldown = new Map();
-
 let ball1, ball2, ball3, ball4;
 let balls = [];
-let pockets = [];
+let pockets;
 
 function preload() {
     this.load.image("ball", "assets/ball.png");
-    this.load.image("ball", "assets/pocket.png");
+    this.load.image("pocket", "assets/pocket.png");
 }
 
 function create() {
-    // Cria colisões entre todas as combinações de bolas
-    for (let i = 0; i < 9; i++) {
-        balls[i] = createBall(this, 100 + i * 100, 100 + i * 50, i);
-    }
-    // Set some initial velocities
-    balls[0].setVelocity(15, 2);
-    balls[2].setVelocity(2, -1);
-    balls[3].setVelocity(10, -0.5);
-    balls[5].setVelocity(0.6, 0.3);
-    balls[1].setVelocity(0.3, -1.5);
+    const Matter = Phaser.Physics.Matter.Matter;
+    this.matter.world.engine.positionIterations = 10;
+    this.matter.world.engine.velocityIterations = 10;
+    Matter.Resolver._restingThresh = 0.001;
 
+    this.matter.world.setBounds(0, 0, 1280, 720, 100, true, true, true, true);
+
+    balls = createBalls(this);
     pockets = createPockets(this);
-    this.matter.world.on("collisionstart", (event) => {
-        event.pairs.forEach(({ bodyA, bodyB }) => {
-            const labels = [bodyA.label, bodyB.label];
-            if (labels.some((l) => l?.startsWith("pocket")) && labels.some((l) => l?.startsWith("ball"))) {
-                console.log("Ball entered pocket");
-                const ballBody = labels[0].startsWith("ball") ? bodyA : bodyB;
-                const ballGameObject = ballBody.gameObject;
-                ballGameObject?.destroy();
+
+    setTimeout(() => {
+        balls[0].setVelocity(20, 0);
+    }, 1000);
+
+    this.matter.world.on("beforeupdate", () => {
+        const decay = 0.999; // Decay factor (closer to 1 = slower stop)
+
+        balls.forEach((ball) => {
+            const vx = ball.body.velocity.x;
+            const vy = ball.body.velocity.y;
+            const speed = Math.hypot(vx, vy);
+
+            if (speed < 0.08) {
+                ball.setVelocity(0, 0);
+            } else if (speed < 5) {
+                ball.setVelocity(vx * 0.9889, vy * 0.9889);
+            } else {
+                ball.setVelocity(vx * 0.9999, vy * 0.9999);
             }
         });
     });
 
-    // Add bouncy walls
-    const width = this.sys.game.config.width;
-    const height = this.sys.game.config.height;
-    const thickness = 30; // Wall thickness
+    this.matter.world.on("collisionstart", (event) => {
+        function isBall(body) {
+            return balls.some((b) => b.body === body);
+        }
 
-    const wallOptions = { isStatic: true, restitution: 1 };
+        function isPocket(body) {
+            return pockets.entryPoints.some((p) => p.body === body);
+        }
 
-    // Top wall
-    this.matter.add.rectangle(width / 2, 0, width, 10, wallOptions);
-    // Bottom wall
-    this.matter.add.rectangle(width / 2, height, width, 10, wallOptions);
-    // Left wall
-    this.matter.add.rectangle(0, height / 2, 10, height, wallOptions);
-    // Right wall
-    this.matter.add.rectangle(width, height / 2, 10, height, wallOptions);
+        removeBallFromWorld = (scene, ball) => {
+            const index = balls.indexOf(ball);
+            if (index !== -1) {
+                balls.splice(index, 1);
+                scene.matter.world.remove(ball.body);
+                ball.destroy();
+            }
+        };
+
+        event.pairs.forEach((pair) => {
+            const { bodyA, bodyB } = pair;
+            let ballBody, pocketBody;
+
+            if (isBall(bodyA) && isPocket(bodyB)) {
+                ballBody = bodyA;
+            } else if (isBall(bodyB) && isPocket(bodyA)) {
+                ballBody = bodyB;
+            }
+
+            if (ballBody) {
+                const ballSprite = balls.find((b) => b.body === ballBody);
+                if (ballSprite) {
+                    removeBallFromWorld(this, ballSprite);
+                }
+            }
+        });
+    });
 }
 
 function update() {}
