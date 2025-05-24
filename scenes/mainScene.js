@@ -9,6 +9,7 @@ let balls = [];
 let pockets;
 
 let stickLocked = false;
+let stickDistance = 25;
 let powerBar; // Container gráfico da barra
 let powerSlider; // O slider que o jogador arrasta
 let powerValue = 0; // Força atual (0-1)
@@ -147,6 +148,8 @@ function create() {
             // Normalizar valor de força entre 0 e 1
             const sliderPosition = (gameObject.y - minY) / powerBar.height;
             powerValue = sliderPosition;
+            stickDistance = 25 + powerValue * 200;
+            updateStickPosition(pointer);
         }
     });
 
@@ -154,6 +157,7 @@ function create() {
         if (gameObject === powerSlider && stickLocked) {
             isDragging = false;
             shootCueBall();
+            stickDistance = 25;
         }
     });
 }
@@ -211,7 +215,14 @@ function updateStickPosition(pointer) {
         stick.setVisible(true);
     }
 
-    if (stickLocked) return;
+    const distance = stickDistance; // Adjust this for how far back the stick sits
+
+    if (stickLocked) {
+        const angle = stick.rotation - Phaser.Math.DegToRad(90);
+        stick.x = ball1.x + Math.cos(angle) * -distance;
+        stick.y = ball1.y + Math.sin(angle) * -distance;
+        return;
+    }
     const dx = pointer.x - ball1.x;
     const dy = pointer.y - ball1.y;
     const angle = Math.atan2(dy, dx);
@@ -219,7 +230,6 @@ function updateStickPosition(pointer) {
     stick.rotation = angle + -1.57079633;
 
     // Offset the stick to the opposite side of the pointer (behind ball)
-    const distance = 25; // Adjust this for how far back the stick sits
     stick.x = ball1.x + Math.cos(angle) * distance;
     stick.y = ball1.y + Math.sin(angle) * distance;
 }
