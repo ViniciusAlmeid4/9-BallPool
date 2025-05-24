@@ -8,6 +8,8 @@ let ball1, ball2, ball3, ball4;
 let balls = [];
 let pockets;
 
+let stickLocked = false;
+
 function preload() {
     this.load.image("ball", "assets/ball.png");
     this.load.image("pocket", "assets/pocket.png");
@@ -25,6 +27,11 @@ function create() {
     this.input.on("pointermove", (pointer) => {
         updateStickPosition(pointer);
     });
+
+    this.input.on("pointerdown", () => {
+        stickLocked = !stickLocked;
+    });
+}
 
     balls = createBalls(this);
     pockets = createPockets(this);
@@ -95,6 +102,8 @@ function create() {
 function update() {}
 
 function updateStickPosition(pointer) {
+    if(stickLocked) return;
+
     const dx = pointer.x - ball1.x;
     const dy = pointer.y - ball1.y;
     const angle = Math.atan2(dy, dx);
