@@ -1,12 +1,12 @@
 const config = {
     type: Phaser.AUTO,
-    width: 1280,
+    width: 1380,
     height: 720,
     backgroundColor: "#1d1d1d",
     physics: {
         default: "matter",
         matter: {
-            debug: true,
+            debug: false,
             gravity: { y: 0 },
         },
     },
