@@ -9,11 +9,19 @@ let balls = [];
 let pockets;
 
 let stickLocked = false;
-let stickDistance = 25;
+let stickDistance = 20;
 let powerBar; // Container gráfico da barra
 let powerSlider; // O slider que o jogador arrasta
 let powerValue = 0; // Força atual (0-1)
 let isDragging = false;
+
+let isStickAnimating = false;
+let stickAnimationProgress = 0;
+let stickAnimationDuration = 150; // milliseconds
+let stickAnimationStart = 0;
+let stickInitialDistance = 20;
+let stickFinalDistance = 5;
+let queuedForce = { x: 0, y: 0 };
 
 function preload() {
     this.load.image("table", "assets/table.png");
@@ -61,10 +69,6 @@ function create() {
     balls = createBalls(this);
     pockets = createPockets(this);
     stick = createStick(this, 300, 700);
-
-    setTimeout(() => {
-        balls[0].setVelocity(20, 0);
-    }, 1000);
 
     this.matter.world.on("beforeupdate", () => {
         const decay = 0.999; // Decay factor (closer to 1 = slower stop)
@@ -148,7 +152,7 @@ function create() {
             // Normalizar valor de força entre 0 e 1
             const sliderPosition = (gameObject.y - minY) / powerBar.height;
             powerValue = sliderPosition;
-            stickDistance = 25 + powerValue * 200;
+            stickDistance = 20 + powerValue * 200;
             updateStickPosition(pointer);
         }
     });
@@ -157,12 +161,42 @@ function create() {
         if (gameObject === powerSlider && stickLocked) {
             isDragging = false;
             shootCueBall();
-            stickDistance = 25;
+            stickDistance = 20;
         }
     });
 }
 
 function update() {
+    const now = performance.now();
+
+    if (isStickAnimating) {
+        const elapsed = now - stickAnimationStart;
+        const t = Math.min(elapsed / stickAnimationDuration, 1); // progress from 0 to 1
+
+        // Linear interpolation between initial and final distances
+        stickDistance = Phaser.Math.Linear(
+            stickInitialDistance,
+            stickFinalDistance,
+            t
+        );
+        updateStickPosition(this.input.activePointer);
+
+        if (t >= 1) {
+            // Animation finished
+            ball1.applyForce(queuedForce);
+
+            isStickAnimating = false;
+            stickLocked = false;
+            powerValue = 0;
+            stickDistance = 20;
+
+            // Reset slider
+            powerSlider.y = powerBar.y - powerBar.height / 2;
+
+            updateStickPosition(this.input.activePointer);
+        }
+    }
+
     balls.forEach((ball) => {
         updateStickPosition(this.input.activePointer);
 
@@ -171,9 +205,8 @@ function update() {
 
         const lowSpeedThreshold = 0.5;
         const stopThreshold = 0.1;
-        const bounceLoss = 0.95; // Simulates energy loss on bounce
+        const bounceLoss = 0.95;
 
-        // Manual damping
         if (speed < lowSpeedThreshold && speed > stopThreshold) {
             ball.setVelocity(velocity.x * 0.9, velocity.y * 0.9);
         } else if (speed <= stopThreshold) {
@@ -181,14 +214,12 @@ function update() {
             ball.setAngularVelocity(0);
         }
 
-        // Define world bounds (same as setBounds)
-        const left = 0;
-        const right = 1380;
-        const top = 0;
-        const bottom = 720;
+        const left = 0,
+            right = 1380,
+            top = 0,
+            bottom = 720;
         const radius = ball.displayWidth / 2;
 
-        // Manual bounce with energy loss
         if (ball.x - radius <= left && velocity.x < 0) {
             ball.setVelocity(-velocity.x * bounceLoss, velocity.y * bounceLoss);
         } else if (ball.x + radius >= right && velocity.x > 0) {
@@ -202,7 +233,6 @@ function update() {
         }
     });
 
-    // Mostrar barra de força só quando o taco está travado
     powerBar.setVisible(stickLocked);
     powerSlider.setVisible(stickLocked);
 }
@@ -237,22 +267,20 @@ function updateStickPosition(pointer) {
 function shootCueBall() {
     if (!ball1) return;
 
-    const maxForce = 0.05; // Ajuste conforme o comportamento
+    const maxForce = 0.15;
     const force = powerValue * maxForce;
 
-    // Direção: do taco para a bola
     const angle = stick.rotation - Phaser.Math.DegToRad(90);
 
-    const forceX = Math.cos(angle) * force;
-    const forceY = Math.sin(angle) * force;
+    queuedForce = {
+        x: Math.cos(angle) * force,
+        y: Math.sin(angle) * force,
+    };
 
-    // Aplicar força na bola branca
-    ball1.applyForce({ x: forceX, y: forceY });
+    stickInitialDistance = stickDistance;
+    stickFinalDistance = 5; // almost hitting the ball
+    stickAnimationProgress = 0;
+    stickAnimationStart = performance.now();
 
-    // Resetar estado
-    stickLocked = false;
-    powerValue = 0;
-
-    // Resetar slider
-    powerSlider.y = powerBar.y - powerBar.height / 2;
+    isStickAnimating = true;
 }
