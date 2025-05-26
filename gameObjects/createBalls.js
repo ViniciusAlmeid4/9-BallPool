@@ -2,7 +2,7 @@ function createBalls(scene) {
     let balls = [];
 
     // White ball (cue ball) separated
-    const whiteBall = { x: 200, y: 360, isWhite: true };
+    const whiteBall = { x: 300, y: 360, isWhite: true };
 
     // Pyramid (triangle) formation for 9-ball pool
     const pyramidBalls = [
@@ -24,11 +24,48 @@ function createBalls(scene) {
         const ball = scene.matter.add.image(pos.x, pos.y, "ball");
         ball.setCircle(20);
         ball.setFriction(0);
-        // ball.setFrictionStatic(0.0);
         ball.setFrictionAir(0.005); // Simula arrasto
         ball.setBounce(0.9);
         balls.push(ball);
     });
 
     return balls;
+}
+
+function manualSpeedDamping(scene, pointer) {
+    balls.forEach((ball) => {
+        updateStickPosition(scene, pointer);
+
+        const velocity = ball.body.velocity;
+        const speed = Math.sqrt(velocity.x ** 2 + velocity.y ** 2);
+
+        const lowSpeedThreshold = 0.5;
+        const stopThreshold = 0.1;
+        const bounceLoss = 0.95;
+
+        if (speed < lowSpeedThreshold && speed > stopThreshold) {
+            ball.setVelocity(velocity.x * 0.9, velocity.y * 0.9);
+        } else if (speed <= stopThreshold) {
+            ball.setVelocity(0, 0);
+            ball.setAngularVelocity(0);
+        }
+
+        const left = 0,
+            right = 1380,
+            top = 0,
+            bottom = 720;
+        const radius = ball.displayWidth / 2;
+
+        if (ball.x - radius <= left && velocity.x < 0) {
+            ball.setVelocity(-velocity.x * bounceLoss, velocity.y * bounceLoss);
+        } else if (ball.x + radius >= right && velocity.x > 0) {
+            ball.setVelocity(-velocity.x * bounceLoss, velocity.y * bounceLoss);
+        }
+
+        if (ball.y - radius <= top && velocity.y < 0) {
+            ball.setVelocity(velocity.x * bounceLoss, -velocity.y * bounceLoss);
+        } else if (ball.y + radius >= bottom && velocity.y > 0) {
+            ball.setVelocity(velocity.x * bounceLoss, -velocity.y * bounceLoss);
+        }
+    });
 }

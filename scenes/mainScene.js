@@ -8,13 +8,6 @@ let ball1;
 let balls = [];
 let pockets;
 
-let stickLocked = false;
-let stickDistance = 20;
-let powerBar; // Container gráfico da barra
-let powerSlider; // O slider que o jogador arrasta
-let powerValue = 0; // Força atual (0-1)
-let isDragging = false;
-
 let isStickAnimating = false;
 let stickAnimationProgress = 0;
 let stickAnimationDuration = 150; // milliseconds
@@ -30,9 +23,16 @@ function preload() {
     this.load.image("stick", "assets/stick.png");
     this.load.image("powerBar", "assets/powerBar.png");
     this.load.image("powerSlider", "assets/powerSlider.png");
+    this.load.image("shadowBall", "assets/shadowBall.png");
 }
 
 function create() {
+    this.stickLocked = false;
+    this.stickDistance = 20;
+    this.isDragging = false;
+    this.powerValue = 0;
+    this.trajectoryLine = this.add.graphics();
+
     const Matter = Phaser.Physics.Matter.Matter;
     this.matter.world.engine.positionIterations = 10;
     this.matter.world.engine.velocityIterations = 10;
@@ -43,14 +43,13 @@ function create() {
     this.add.image(690, 404, "table").setDepth(-1);
 
     this.input.on("pointermove", (pointer) => {
-        updateStickPosition(pointer);
+        updateStickPosition(this, pointer);
     });
 
     this.input.on("pointerdown", (pointer) => {
-        // Define table area where the stick can be locked/unlocked
         const tableArea = {
-            x: 100, // table left
-            y: 50, // table top
+            x: 100,
+            y: 50,
             width: 1180,
             height: 620,
         };
@@ -61,8 +60,7 @@ function create() {
             pointer.y >= tableArea.y &&
             pointer.y <= tableArea.y + tableArea.height
         ) {
-            // Only toggle stickLocked if pointer is inside table area
-            stickLocked = !stickLocked;
+            this.stickLocked = !this.stickLocked;
         }
     });
 
@@ -70,11 +68,18 @@ function create() {
     pockets = createPockets(this);
     stick = createStick(this, 300, 700);
 
-    this.matter.world.on("beforeupdate", () => {
-        const decay = 0.999; // Decay factor (closer to 1 = slower stop)
+    const { powerBar, powerSlider } = createPowerBar(this);
+    this.powerBar = powerBar;
+    this.powerSlider = powerSlider;
 
+    this.shadowBall = this.add.image(0, 0, "shadowBall");
+    this.shadowBall.setVisible(false);
+    this.shadowBall.setDisplaySize(40, 40); // Ensures it's always 40x40
+    this.shadowBall.setDepth(1); // Above other elements, optional
+
+    this.matter.world.on("beforeupdate", () => {
         balls.forEach((ball) => {
-            updateStickPosition(this.input.activePointer);
+            updateStickPosition(this, this.input.activePointer);
 
             const vx = ball.body.velocity.x;
             const vy = ball.body.velocity.y;
@@ -99,7 +104,7 @@ function create() {
             return pockets.entryPoints.some((p) => p.body === body);
         }
 
-        removeBallFromWorld = (scene, ball) => {
+        const removeBallFromWorld = (scene, ball) => {
             const index = balls.indexOf(ball);
             if (index !== -1) {
                 balls.splice(index, 1);
@@ -110,7 +115,7 @@ function create() {
 
         event.pairs.forEach((pair) => {
             const { bodyA, bodyB } = pair;
-            let ballBody, pocketBody;
+            let ballBody;
 
             if (isBall(bodyA) && isPocket(bodyB)) {
                 ballBody = bodyA;
@@ -126,44 +131,6 @@ function create() {
             }
         });
     });
-
-    // Barra de força (escondida inicialmente)
-    powerBar = this.add.image(50, 360, "powerBar").setOrigin(0.5);
-    powerSlider = this.add.image(50, 210, "powerSlider").setOrigin(0.5);
-
-    // Configurações de interação
-    powerSlider.setInteractive();
-    this.input.setDraggable(powerSlider);
-
-    this.input.on("dragstart", (pointer, gameObject) => {
-        if (gameObject === powerSlider && stickLocked) {
-            isDragging = true;
-        }
-    });
-
-    this.input.on("drag", (pointer, gameObject, dragX, dragY) => {
-        if (gameObject === powerSlider && stickLocked) {
-            // Limitar dentro da barra
-            const minY = powerBar.y - powerBar.height / 2;
-            const maxY = powerBar.y + powerBar.height / 2;
-
-            gameObject.y = Phaser.Math.Clamp(dragY, minY, maxY);
-
-            // Normalizar valor de força entre 0 e 1
-            const sliderPosition = (gameObject.y - minY) / powerBar.height;
-            powerValue = sliderPosition;
-            stickDistance = 20 + powerValue * 200;
-            updateStickPosition(pointer);
-        }
-    });
-
-    this.input.on("dragend", (pointer, gameObject) => {
-        if (gameObject === powerSlider && stickLocked) {
-            isDragging = false;
-            shootCueBall();
-            stickDistance = 20;
-        }
-    });
 }
 
 function update() {
@@ -171,116 +138,32 @@ function update() {
 
     if (isStickAnimating) {
         const elapsed = now - stickAnimationStart;
-        const t = Math.min(elapsed / stickAnimationDuration, 1); // progress from 0 to 1
+        const t = Math.min(elapsed / stickAnimationDuration, 1);
 
-        // Linear interpolation between initial and final distances
-        stickDistance = Phaser.Math.Linear(
+        this.stickDistance = Phaser.Math.Linear(
             stickInitialDistance,
             stickFinalDistance,
             t
         );
-        updateStickPosition(this.input.activePointer);
+
+        updateStickPosition(this, this.input.activePointer);
 
         if (t >= 1) {
-            // Animation finished
             ball1.applyForce(queuedForce);
 
             isStickAnimating = false;
-            stickLocked = false;
-            powerValue = 0;
-            stickDistance = 20;
+            this.stickLocked = false;
+            this.powerValue = 0;
+            this.stickDistance = 20;
 
-            // Reset slider
-            powerSlider.y = powerBar.y - powerBar.height / 2;
+            this.powerSlider.y = this.powerBar.y - this.powerBar.height / 2;
 
-            updateStickPosition(this.input.activePointer);
+            updateStickPosition(this, this.input.activePointer);
         }
     }
 
-    balls.forEach((ball) => {
-        updateStickPosition(this.input.activePointer);
+    manualSpeedDamping(this, this.input.activePointer);
 
-        const velocity = ball.body.velocity;
-        const speed = Math.sqrt(velocity.x ** 2 + velocity.y ** 2);
-
-        const lowSpeedThreshold = 0.5;
-        const stopThreshold = 0.1;
-        const bounceLoss = 0.95;
-
-        if (speed < lowSpeedThreshold && speed > stopThreshold) {
-            ball.setVelocity(velocity.x * 0.9, velocity.y * 0.9);
-        } else if (speed <= stopThreshold) {
-            ball.setVelocity(0, 0);
-            ball.setAngularVelocity(0);
-        }
-
-        const left = 0,
-            right = 1380,
-            top = 0,
-            bottom = 720;
-        const radius = ball.displayWidth / 2;
-
-        if (ball.x - radius <= left && velocity.x < 0) {
-            ball.setVelocity(-velocity.x * bounceLoss, velocity.y * bounceLoss);
-        } else if (ball.x + radius >= right && velocity.x > 0) {
-            ball.setVelocity(-velocity.x * bounceLoss, velocity.y * bounceLoss);
-        }
-
-        if (ball.y - radius <= top && velocity.y < 0) {
-            ball.setVelocity(velocity.x * bounceLoss, -velocity.y * bounceLoss);
-        } else if (ball.y + radius >= bottom && velocity.y > 0) {
-            ball.setVelocity(velocity.x * bounceLoss, -velocity.y * bounceLoss);
-        }
-    });
-
-    powerBar.setVisible(stickLocked);
-    powerSlider.setVisible(stickLocked);
-}
-
-function updateStickPosition(pointer) {
-    stick.setVisible(false);
-    ball1 = balls[0];
-    // console.log(ball1.body.velocity.x);
-    if (!ball1.body.velocity.x && !ball1.body.velocity.y) {
-        stick.setVisible(true);
-    }
-
-    const distance = stickDistance; // Adjust this for how far back the stick sits
-
-    if (stickLocked) {
-        const angle = stick.rotation - Phaser.Math.DegToRad(90);
-        stick.x = ball1.x + Math.cos(angle) * -distance;
-        stick.y = ball1.y + Math.sin(angle) * -distance;
-        return;
-    }
-    const dx = pointer.x - ball1.x;
-    const dy = pointer.y - ball1.y;
-    const angle = Math.atan2(dy, dx);
-    // Set rotation to point from ball to opposite side of mouse
-    stick.rotation = angle + -1.57079633;
-
-    // Offset the stick to the opposite side of the pointer (behind ball)
-    stick.x = ball1.x + Math.cos(angle) * distance;
-    stick.y = ball1.y + Math.sin(angle) * distance;
-}
-
-function shootCueBall() {
-    if (!ball1) return;
-
-    const maxForce = 0.15;
-    const force = powerValue * maxForce;
-
-    const angle = stick.rotation - Phaser.Math.DegToRad(90);
-
-    queuedForce = {
-        x: Math.cos(angle) * force,
-        y: Math.sin(angle) * force,
-    };
-
-    stickInitialDistance = stickDistance;
-    stickFinalDistance = 5; // almost hitting the ball
-    stickAnimationProgress = 0;
-    stickAnimationStart = performance.now();
-
-    isStickAnimating = true;
+    this.powerBar.setVisible(this.stickLocked);
+    this.powerSlider.setVisible(this.stickLocked);
 }
