@@ -2,7 +2,7 @@ function createBalls(scene) {
     let balls = [];
 
     // White ball (cue ball) separated
-    const whiteBall = { x: 200, y: 360, isWhite: true };
+    const whiteBall = { x: 300, y: 360, isWhite: true };
 
     // Pyramid (triangle) formation for 9-ball pool
     const pyramidBalls = [
@@ -24,7 +24,6 @@ function createBalls(scene) {
         const ball = scene.matter.add.image(pos.x, pos.y, "ball");
         ball.setCircle(20);
         ball.setFriction(0);
-        // ball.setFrictionStatic(0.0);
         ball.setFrictionAir(0.005); // Simula arrasto
         ball.setBounce(0.9);
         balls.push(ball);
