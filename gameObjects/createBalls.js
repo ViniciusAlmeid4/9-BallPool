@@ -24,7 +24,7 @@ function createBalls(scene) {
         const ball = scene.matter.add.image(pos.x, pos.y, "ball");
         ball.setCircle(20);
         ball.setFriction(0);
-        ball.setFrictionAir(0.005); // Simula arrasto
+        ball.setFrictionAir(0.0025); // Simula arrasto
         ball.setBounce(0.9);
         balls.push(ball);
     });

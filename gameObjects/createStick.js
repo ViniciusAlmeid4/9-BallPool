@@ -97,29 +97,6 @@ function updateTrajectoryLine(scene) {
     scene.shadowBall.setVisible(true);
 }
 
-function shootCueBall(scene) {
-    if (!ball1) return;
-
-    const maxForce = 0.125;
-    const force = scene.powerValue * maxForce;
-
-    const angle = stick.rotation - Phaser.Math.DegToRad(90);
-
-    queuedForce = {
-        x: Math.cos(angle) * force,
-        y: Math.sin(angle) * force,
-    };
-
-    stickInitialDistance = scene.stickDistance;
-    stickFinalDistance = 5;
-    stickAnimationProgress = 0;
-    stickAnimationStart = performance.now();
-
-    scene.trajectoryLine.clear();
-
-    isStickAnimating = true;
-}
-
 function getRayCircleIntersection(rayOrigin, rayDir, circleCenter, radius) {
     const toCircle = {
         x: circleCenter.x - rayOrigin.x,
@@ -154,4 +131,27 @@ function getRayCircleIntersection(rayOrigin, rayDir, circleCenter, radius) {
         x: rayOrigin.x + rayDir.x * intersectionDist,
         y: rayOrigin.y + rayDir.y * intersectionDist,
     };
+}
+
+function shootCueBall(scene) {
+    if (!ball1) return;
+
+    const maxForce = 0.1;
+    const force = scene.powerValue * maxForce;
+
+    const angle = stick.rotation - Phaser.Math.DegToRad(90);
+
+    queuedForce = {
+        x: Math.cos(angle) * force,
+        y: Math.sin(angle) * force,
+    };
+
+    stickInitialDistance = scene.stickDistance;
+    stickFinalDistance = 5;
+    stickAnimationProgress = 0;
+    stickAnimationStart = performance.now();
+
+    scene.trajectoryLine.clear();
+
+    isStickAnimating = true;
 }
