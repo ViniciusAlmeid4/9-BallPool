@@ -77,15 +77,13 @@ function create() {
     this.shadowBall.setDisplaySize(40, 40); // Ensures it's always 40x40
     this.shadowBall.setDepth(1); // Above other elements, optional
 
-    this.matter.world.on("beforeupdate", () => {
+this.matter.world.on("beforeupdate", () => {
         balls.forEach((ball) => {
-            updateStickPosition(this, this.input.activePointer);
-
             const vx = ball.body.velocity.x;
             const vy = ball.body.velocity.y;
             const speed = Math.hypot(vx, vy);
 
-            if (speed < 0.08) {
+            if (speed < 0.05) {
                 ball.setVelocity(0, 0);
             } else if (speed < 5) {
                 ball.setVelocity(vx * 0.9889, vy * 0.9889);
@@ -161,8 +159,6 @@ function update() {
             updateStickPosition(this, this.input.activePointer);
         }
     }
-
-    manualSpeedDamping(this, this.input.activePointer);
 
     this.powerBar.setVisible(this.stickLocked);
     this.powerSlider.setVisible(this.stickLocked);
