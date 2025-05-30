@@ -178,6 +178,14 @@ function create() {
         barrierThickness,
         height - pocketOffset * 2 - 4
     );
+    const { powerBar, powerSlider } = createPowerBar(this);
+    this.powerBar = powerBar;
+    this.powerSlider = powerSlider;
+
+    this.shadowBall = this.add.image(0, 0, "shadowBall");
+    this.shadowBall.setVisible(false);
+    this.shadowBall.setDisplaySize(40, 40); // Ensures it's always 40x40
+    this.shadowBall.setDepth(1); // Above other elements, optional
 
 this.matter.world.on("beforeupdate", () => {
         balls.forEach((ball) => {
