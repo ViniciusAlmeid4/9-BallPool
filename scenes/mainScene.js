@@ -67,11 +67,15 @@ function create() {
     balls = createBalls(this);
     pockets = createPockets(this);
     stick = createStick(this, 300, 700);
+    const powerControls = createPowerBar(this);
+    this.powerBar = powerControls.powerBar;
+    this.powerSlider = powerControls.powerSlider;
+    this.shadowBall = this.add.image(0, 0, "shadowBall").setVisible(false);
 
     // Table barrier (cushion) settings
     const width = this.sys.game.config.width;
     const height = this.sys.game.config.height;
-    const barrierThickness = 2;
+    const barrierThickness = 8;
     const tableOffset = 74; // Offset for the table edges
     const pocketOffset = 114;
 
@@ -181,12 +185,10 @@ this.matter.world.on("beforeupdate", () => {
             const vy = ball.body.velocity.y;
             const speed = Math.hypot(vx, vy);
 
-            if (speed < 0.05) {
+            if (speed < 0.03) {
                 ball.setVelocity(0, 0);
-            } else if (speed < 5) {
-                ball.setVelocity(vx * 0.9889, vy * 0.9889);
             } else {
-                ball.setVelocity(vx * 0.9999, vy * 0.9999);
+                ball.setVelocity(vx * 0.995, vy * 0.995);
             }
         });
     });
