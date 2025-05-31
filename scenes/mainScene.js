@@ -40,6 +40,8 @@ function create() {
 
     this.matter.world.setBounds(0, 0, 1240, 633, 100, true, true, true, true);
 
+    createBorders(this);
+
     this.add.image(620, 316.5, "table").setDepth(-1);
 
     this.input.on("pointermove", (pointer) => {
@@ -72,112 +74,6 @@ function create() {
     this.powerSlider = powerControls.powerSlider;
     this.shadowBall = this.add.image(0, 0, "shadowBall").setVisible(false);
 
-    // Table barrier (cushion) settings
-    const width = this.sys.game.config.width;
-    const height = this.sys.game.config.height;
-    const barrierThickness = 8;
-    const tableOffset = 74; // Offset for the table edges
-    const pocketOffset = 114;
-
-    // Top barrier (left segment)
-    this.matter.add.rectangle(
-        tableOffset + (pocketOffset / 2) - 15 + ((width / 2) - tableOffset * 2 - 8) / 2, // center x
-        barrierThickness / 2 + barrierThickness + tableOffset, // center y
-        (width / 2) - tableOffset * 2 - 8, // width
-        barrierThickness, // height
-        { isStatic: true, restitution: 1, label: "barrier" }
-    );
-    
-    // Top barrier (right segment)
-    this.matter.add.rectangle(
-        (width / 2) + pocketOffset - tableOffset + ((width / 2) - tableOffset * 2 - 8) / 2,
-        barrierThickness / 2 + barrierThickness + tableOffset,
-        (width / 2) - tableOffset * 2 - 8,
-        barrierThickness,
-        { isStatic: true, restitution: 1, label: "barrier" }
-    );
-
-    // Bottom barrier (left segment)
-    this.matter.add.rectangle(
-        tableOffset + (pocketOffset / 2) - 15 + ((width / 2) - tableOffset * 2 - 8) / 2,
-        height - barrierThickness / 2 - barrierThickness - tableOffset,
-        (width / 2) - tableOffset * 2 - 8,
-        barrierThickness,
-        { isStatic: true, restitution: 1, label: "barrier" }
-    );
-
-    // Bottom barrier (right segment)
-    this.matter.add.rectangle(
-        (width / 2) + pocketOffset - tableOffset + ((width / 2) - tableOffset * 2 - 8) / 2,
-        height - barrierThickness / 2 - barrierThickness - tableOffset,
-        (width / 2) - tableOffset * 2 - 8,
-        barrierThickness,
-        { isStatic: true, restitution: 1, label: "barrier" }
-    );
-
-    // Left barrier (top segment)
-    this.matter.add.rectangle(
-        0 + tableOffset + barrierThickness / 2,
-        pocketOffset + 1.5 + (height - pocketOffset * 2 - 4) / 2,
-        barrierThickness,
-        height - pocketOffset * 2 - 4,
-        { isStatic: true, restitution: 1, label: "barrier" }
-    );
-
-    // Right barrier (top segment)
-    this.matter.add.rectangle(
-        width - barrierThickness - tableOffset + barrierThickness / 2,
-        pocketOffset + 1.5 + (height - pocketOffset * 2 - 4) / 2,
-        barrierThickness,
-        height - pocketOffset * 2 - 4,
-        { isStatic: true, restitution: 1, label: "barrier" }
-    );
-
-    const graphics = this.add.graphics();
-    graphics.fillStyle(0xffffff, 1); // White, fully opaque
-
-    // Top barrier (left segment)
-    graphics.fillRect(
-        tableOffset + (pocketOffset / 2) - 15,
-        barrierThickness + tableOffset,
-        (width / 2) - tableOffset * 2 - 8,
-        barrierThickness
-    );
-    // Top barrier (right segment)
-    graphics.fillRect(
-        (width / 2) + pocketOffset - tableOffset,
-        barrierThickness + tableOffset,
-        (width / 2) - tableOffset * 2 - 8,
-        barrierThickness
-    );
-    // Bottom barrier (left segment)
-    graphics.fillRect(
-        tableOffset + (pocketOffset / 2) - 15,
-        height - barrierThickness - tableOffset,
-        (width / 2) - tableOffset * 2 - 8,
-        barrierThickness
-    );
-    // Bottom barrier (right segment)
-    graphics.fillRect(
-        (width / 2) + pocketOffset - tableOffset,
-        height - barrierThickness - tableOffset,
-        (width / 2) - tableOffset * 2 - 8,
-        barrierThickness
-    );
-    // Left barrier
-    graphics.fillRect(
-        0  + tableOffset,
-        pocketOffset + 1.5,
-        barrierThickness,
-        height - pocketOffset * 2 - 4
-    );
-    // Right barrier
-    graphics.fillRect(
-        width - barrierThickness - tableOffset,
-        pocketOffset + 1.5,
-        barrierThickness,
-        height - pocketOffset * 2 - 4
-    );
     const { powerBar, powerSlider } = createPowerBar(this);
     this.powerBar = powerBar;
     this.powerSlider = powerSlider;
