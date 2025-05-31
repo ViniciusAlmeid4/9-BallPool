@@ -9,12 +9,25 @@ function createPowerBar(scene) {
     scene.input.setDraggable(powerSlider);
 
     scene.input.on("dragstart", (pointer, gameObject) => {
-        if (gameObject === powerSlider && scene.stickLocked) {
+        // A funcionalidade de drag só inicia se o slider é o objeto, o stick está travado
+        // E SE TODAS AS BOLAS ESTIVEREM PARADAS
+        let allStopped = true;
+        for (let i = 0; i < balls.length; i++) {
+            if (
+                balls[i].body.velocity.x !== 0 ||
+                balls[i].body.velocity.y !== 0
+            ) {
+                allStopped = false;
+                break;
+            }
+        }
+        if (gameObject === powerSlider && scene.stickLocked && allStopped) {
             scene.isDragging = true;
         }
     });
 
     scene.input.on("drag", (pointer, gameObject, dragX, dragY) => {
+        // A funcionalidade de drag só ocorre se o slider é o objeto e o stick está travado
         if (gameObject === powerSlider && scene.stickLocked) {
             const minY = powerBar.y - powerBar.height / 2;
             const maxY = powerBar.y + powerBar.height / 2;
@@ -30,6 +43,7 @@ function createPowerBar(scene) {
     });
 
     scene.input.on("dragend", (pointer, gameObject) => {
+        // A funcionalidade de drag end só ocorre se o slider é o objeto e o stick está travado
         if (gameObject === powerSlider && scene.stickLocked) {
             scene.isDragging = false;
             shootCueBall(scene);

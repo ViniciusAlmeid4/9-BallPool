@@ -83,16 +83,18 @@ function create() {
     this.shadowBall.setDisplaySize(40, 40); // Ensures it's always 40x40
     this.shadowBall.setDepth(1); // Above other elements, optional
 
-this.matter.world.on("beforeupdate", () => {
+    this.matter.world.on("beforeupdate", () => {
         balls.forEach((ball) => {
             const vx = ball.body.velocity.x;
             const vy = ball.body.velocity.y;
             const speed = Math.hypot(vx, vy);
 
-            if (speed < 0.03) {
+            if (speed < 0.01) {
                 ball.setVelocity(0, 0);
+            } else if (speed < 0.5) {
+                ball.setVelocity(vx * 0.98, vy * 0.98); // Heavier damping at low speed
             } else {
-                ball.setVelocity(vx * 0.995, vy * 0.995);
+                ball.setVelocity(vx * 0.99, vy * 0.99); // Light damping for high speed
             }
         });
     });
@@ -137,6 +139,16 @@ this.matter.world.on("beforeupdate", () => {
 
 function update() {
     const now = performance.now();
+    let allStopped = true;
+    for (let i = 0; i < balls.length; i++) {
+        if (balls[i].body.velocity.x !== 0 || balls[i].body.velocity.y !== 0) {
+            allStopped = false;
+            break;
+        }
+    }
+
+    this.powerBar.setVisible(allStopped && this.stickLocked);
+    this.powerSlider.setVisible(allStopped && this.stickLocked);
 
     if (isStickAnimating) {
         const elapsed = now - stickAnimationStart;
@@ -163,7 +175,4 @@ function update() {
             updateStickPosition(this, this.input.activePointer);
         }
     }
-
-    this.powerBar.setVisible(this.stickLocked);
-    this.powerSlider.setVisible(this.stickLocked);
 }
