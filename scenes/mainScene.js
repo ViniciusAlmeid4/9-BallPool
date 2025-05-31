@@ -16,6 +16,9 @@ let stickInitialDistance = 20;
 let stickFinalDistance = 5;
 let queuedForce = { x: 0, y: 0 };
 
+let playerManager;
+let canSwitchPlayer = false; // Flag para controlar o momento da troca de jogador
+
 function preload() {
     this.load.image("table", "assets/table.png");
     this.load.image("ball", "assets/ball.png");
@@ -44,25 +47,40 @@ function create() {
 
     this.add.image(620, 316.5, "table").setDepth(-1);
 
+    playerManager = createPlayerDisplay(this);
+
     this.input.on("pointermove", (pointer) => {
         updateStickPosition(this, pointer);
     });
 
     this.input.on("pointerdown", (pointer) => {
-        const tableArea = {
-            x: 100,
-            y: 50,
-            width: 1180,
-            height: 620,
-        };
+        let allStopped = true;
+        for (let i = 0; i < balls.length; i++) {
+            if (
+                balls[i].body.velocity.x !== 0 ||
+                balls[i].body.velocity.y !== 0
+            ) {
+                allStopped = false;
+                break;
+            }
+        }
 
-        if (
-            pointer.x >= tableArea.x &&
-            pointer.x <= tableArea.x + tableArea.width &&
-            pointer.y >= tableArea.y &&
-            pointer.y <= tableArea.y + tableArea.height
-        ) {
-            this.stickLocked = !this.stickLocked;
+        if (allStopped) {
+            const tableArea = {
+                x: 100,
+                y: 50,
+                width: 1180,
+                height: 620,
+            };
+
+            if (
+                pointer.x >= tableArea.x &&
+                pointer.x <= tableArea.x + tableArea.width &&
+                pointer.y >= tableArea.y &&
+                pointer.y <= tableArea.y + tableArea.height
+            ) {
+                this.stickLocked = !this.stickLocked;
+            }
         }
     });
 
@@ -80,8 +98,8 @@ function create() {
 
     this.shadowBall = this.add.image(0, 0, "shadowBall");
     this.shadowBall.setVisible(false);
-    this.shadowBall.setDisplaySize(40, 40); // Ensures it's always 40x40
-    this.shadowBall.setDepth(1); // Above other elements, optional
+    this.shadowBall.setDisplaySize(40, 40);
+    this.shadowBall.setDepth(1);
 
     this.matter.world.on("beforeupdate", () => {
         balls.forEach((ball) => {
@@ -92,9 +110,9 @@ function create() {
             if (speed < 0.01) {
                 ball.setVelocity(0, 0);
             } else if (speed < 0.5) {
-                ball.setVelocity(vx * 0.98, vy * 0.98); // Heavier damping at low speed
+                ball.setVelocity(vx * 0.98, vy * 0.98);
             } else {
-                ball.setVelocity(vx * 0.99, vy * 0.99); // Light damping for high speed
+                ball.setVelocity(vx * 0.99, vy * 0.99);
             }
         });
     });
@@ -114,6 +132,7 @@ function create() {
                 balls.splice(index, 1);
                 scene.matter.world.remove(ball.body);
                 ball.destroy();
+                setBallPocketed(true); // Marca que uma bola foi encaçapada
             }
         };
 
@@ -134,6 +153,20 @@ function create() {
                 }
             }
         });
+    });
+
+    this.matter.world.on("afterupdate", () => {
+        if (isStickAnimating) {
+            resetBallPocketedFlag();
+            canSwitchPlayer = false; // Impede a troca até o final da animação
+        } else if (canSwitchPlayer) {
+            if (!getBallPocketed()) {
+                switchPlayer();
+            }
+            resetBallPocketedFlag();
+            updatePlayerDisplay();
+            canSwitchPlayer = false; // Reseta a flag
+        }
     });
 }
 
@@ -164,15 +197,13 @@ function update() {
 
         if (t >= 1) {
             ball1.applyForce(queuedForce);
-
             isStickAnimating = false;
             this.stickLocked = false;
             this.powerValue = 0;
             this.stickDistance = 20;
-
             this.powerSlider.y = this.powerBar.y - this.powerBar.height / 2;
-
             updateStickPosition(this, this.input.activePointer);
+            canSwitchPlayer = true; // Permite a troca após a tacada
         }
     }
 }
