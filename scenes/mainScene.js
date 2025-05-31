@@ -18,6 +18,10 @@ let queuedForce = { x: 0, y: 0 };
 
 let playerManager;
 let canSwitchPlayer = false; // Flag para controlar o momento da troca de jogador
+let shotTaken = false;
+let shotStarted = false;
+let allBallsStopped = true;
+
 
 function preload() {
     this.load.image("table", "assets/table.png");
@@ -54,18 +58,7 @@ function create() {
     });
 
     this.input.on("pointerdown", (pointer) => {
-        let allStopped = true;
-        for (let i = 0; i < balls.length; i++) {
-            if (
-                balls[i].body.velocity.x !== 0 ||
-                balls[i].body.velocity.y !== 0
-            ) {
-                allStopped = false;
-                break;
-            }
-        }
-
-        if (allStopped) {
+        if (allBallsStopped) {
             const tableArea = {
                 x: 100,
                 y: 50,
@@ -102,6 +95,20 @@ function create() {
     this.shadowBall.setDepth(1);
 
     this.matter.world.on("beforeupdate", () => {
+        let stopped = true;
+        for (let i = 0; i < balls.length; i++) {
+            const v = balls[i].body.velocity;
+            if (v.x !== 0 || v.y !== 0) {
+                stopped = false;
+                if (shotTaken && balls[i] === ball1) {
+                    shotStarted = true; 
+                }
+                break;
+            }
+        }
+        allBallsStopped = stopped;
+
+
         balls.forEach((ball) => {
             const vx = ball.body.velocity.x;
             const vy = ball.body.velocity.y;
@@ -156,32 +163,23 @@ function create() {
     });
 
     this.matter.world.on("afterupdate", () => {
-        if (isStickAnimating) {
-            resetBallPocketedFlag();
-            canSwitchPlayer = false; // Impede a troca até o final da animação
-        } else if (canSwitchPlayer) {
+        if (shotTaken && shotStarted && allBallsStopped) {
             if (!getBallPocketed()) {
                 switchPlayer();
             }
             resetBallPocketedFlag();
             updatePlayerDisplay();
-            canSwitchPlayer = false; // Reseta a flag
+            shotTaken   = false;
+            shotStarted = false;
         }
     });
 }
 
 function update() {
     const now = performance.now();
-    let allStopped = true;
-    for (let i = 0; i < balls.length; i++) {
-        if (balls[i].body.velocity.x !== 0 || balls[i].body.velocity.y !== 0) {
-            allStopped = false;
-            break;
-        }
-    }
 
-    this.powerBar.setVisible(allStopped && this.stickLocked);
-    this.powerSlider.setVisible(allStopped && this.stickLocked);
+    this.powerBar.setVisible(allBallsStopped && this.stickLocked);
+    this.powerSlider.setVisible(allBallsStopped && this.stickLocked);
 
     if (isStickAnimating) {
         const elapsed = now - stickAnimationStart;
@@ -203,7 +201,9 @@ function update() {
             this.stickDistance = 20;
             this.powerSlider.y = this.powerBar.y - this.powerBar.height / 2;
             updateStickPosition(this, this.input.activePointer);
-            canSwitchPlayer = true; // Permite a troca após a tacada
+
+            shotTaken = true;  // A shot was triggered
+            shotStarted = false; // … but we haven’t moved the ball yet
         }
     }
 }

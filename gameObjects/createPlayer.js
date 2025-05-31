@@ -3,15 +3,11 @@ let playerText;
 let hasBallPocketed = false;
 
 function createPlayerDisplay(scene) {
-    playerText = scene.add.text(10, 10, `Jogador ${currentPlayer}`, {
+    playerText = scene.add.text(560, -120, `Jogador ${currentPlayer}`, {
         fontSize: "24px",
         fill: "#fff",
     });
     return { playerText };
-}
-
-function getCurrentPlayer() {
-    return currentPlayer;
 }
 
 function switchPlayer() {
