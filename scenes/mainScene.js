@@ -22,10 +22,12 @@ let shotTaken = false;
 let shotStarted = false;
 let allBallsStopped = true;
 
-
 function preload() {
     this.load.image("table", "assets/table.png");
-    this.load.image("ball", "assets/ball.png");
+    this.load.image("ballRed", "assets/ballRed.png");
+    this.load.image("ballBlue", "assets/ballBlue.png");
+    this.load.image("ballYellow", "assets/ballYellow.png");
+    this.load.image("ballWhite", "assets/ballWhite.png");
     this.load.image("pocket", "assets/pocket.png");
     this.load.image("stick", "assets/stick.png");
     this.load.image("powerBar", "assets/powerBar.png");
@@ -101,13 +103,12 @@ function create() {
             if (v.x !== 0 || v.y !== 0) {
                 stopped = false;
                 if (shotTaken && balls[i] === ball1) {
-                    shotStarted = true; 
+                    shotStarted = true;
                 }
                 break;
             }
         }
         allBallsStopped = stopped;
-
 
         balls.forEach((ball) => {
             const vx = ball.body.velocity.x;
@@ -169,7 +170,7 @@ function create() {
             }
             resetBallPocketedFlag();
             updatePlayerDisplay();
-            shotTaken   = false;
+            shotTaken = false;
             shotStarted = false;
         }
     });
@@ -202,7 +203,7 @@ function update() {
             this.powerSlider.y = this.powerBar.y - this.powerBar.height / 2;
             updateStickPosition(this, this.input.activePointer);
 
-            shotTaken = true;  // A shot was triggered
+            shotTaken = true; // A shot was triggered
             shotStarted = false; // … but we haven’t moved the ball yet
         }
     }
