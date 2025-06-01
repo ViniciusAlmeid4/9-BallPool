@@ -60,3 +60,19 @@ function updatePlayerDisplay() {
 function resetBallPocketedFlag() {
     hasBallPocketed = false;
 }
+
+function shouldKeepTurn(ballColor) {
+    if (!colorAssigned) {
+        return true; // Antes da atribuição, sempre mantém a vez
+    }
+
+    const playerColor = getPlayerColor(currentPlayer);
+
+    if (ballColor === "ballRed") {
+        return playerColor === "vermelho";
+    } else if (ballColor === "ballBlue") {
+        return playerColor === "azul";
+    }
+
+    return false; // Qualquer outra cor não mantém (mas atualmente só red/blue são relevantes)
+}

@@ -21,6 +21,7 @@ let canSwitchPlayer = false; // Flag para controlar o momento da troca de jogado
 let shotTaken = false;
 let shotStarted = false;
 let allBallsStopped = true;
+let lastPocketedBallColor = null;
 
 function preload() {
     this.load.image("table", "assets/table.png");
@@ -141,6 +142,9 @@ function create() {
                 scene.matter.world.remove(ball.body);
                 ball.destroy();
                 setBallPocketed(true); // Marca que uma bola foi encaçapada
+                if (ball.color) {
+                    lastPocketedBallColor = ball.color; // Salva a cor da última bola encaçapada
+                }
             }
         };
 
@@ -172,9 +176,14 @@ function create() {
 
     this.matter.world.on("afterupdate", () => {
         if (shotTaken && shotStarted && allBallsStopped) {
-            if (!getBallPocketed()) {
+            if (getBallPocketed()) {
+                if (!shouldKeepTurn(lastPocketedBallColor)) {
+                    switchPlayer();
+                }
+            } else {
                 switchPlayer();
             }
+            lastPocketedBallColor = null;
             resetBallPocketedFlag();
             updatePlayerDisplay();
             shotTaken = false;
