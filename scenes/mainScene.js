@@ -16,6 +16,13 @@ let stickInitialDistance = 20;
 let stickFinalDistance = 5;
 let queuedForce = { x: 0, y: 0 };
 
+let playerManager;
+let canSwitchPlayer = false; // Flag para controlar o momento da troca de jogador
+let shotTaken = false;
+let shotStarted = false;
+let allBallsStopped = true;
+
+
 function preload() {
     this.load.image("table", "assets/table.png");
     this.load.image("ball", "assets/ball.png");
@@ -44,25 +51,29 @@ function create() {
 
     this.add.image(620, 316.5, "table").setDepth(-1);
 
+    playerManager = createPlayerDisplay(this);
+
     this.input.on("pointermove", (pointer) => {
         updateStickPosition(this, pointer);
     });
 
     this.input.on("pointerdown", (pointer) => {
-        const tableArea = {
-            x: 100,
-            y: 50,
-            width: 1180,
-            height: 620,
-        };
+        if (allBallsStopped) {
+            const tableArea = {
+                x: 100,
+                y: 50,
+                width: 1180,
+                height: 620,
+            };
 
-        if (
-            pointer.x >= tableArea.x &&
-            pointer.x <= tableArea.x + tableArea.width &&
-            pointer.y >= tableArea.y &&
-            pointer.y <= tableArea.y + tableArea.height
-        ) {
-            this.stickLocked = !this.stickLocked;
+            if (
+                pointer.x >= tableArea.x &&
+                pointer.x <= tableArea.x + tableArea.width &&
+                pointer.y >= tableArea.y &&
+                pointer.y <= tableArea.y + tableArea.height
+            ) {
+                this.stickLocked = !this.stickLocked;
+            }
         }
     });
 
@@ -80,19 +91,35 @@ function create() {
 
     this.shadowBall = this.add.image(0, 0, "shadowBall");
     this.shadowBall.setVisible(false);
-    this.shadowBall.setDisplaySize(40, 40); // Ensures it's always 40x40
-    this.shadowBall.setDepth(1); // Above other elements, optional
+    this.shadowBall.setDisplaySize(40, 40);
+    this.shadowBall.setDepth(1);
 
-this.matter.world.on("beforeupdate", () => {
+    this.matter.world.on("beforeupdate", () => {
+        let stopped = true;
+        for (let i = 0; i < balls.length; i++) {
+            const v = balls[i].body.velocity;
+            if (v.x !== 0 || v.y !== 0) {
+                stopped = false;
+                if (shotTaken && balls[i] === ball1) {
+                    shotStarted = true; 
+                }
+                break;
+            }
+        }
+        allBallsStopped = stopped;
+
+
         balls.forEach((ball) => {
             const vx = ball.body.velocity.x;
             const vy = ball.body.velocity.y;
             const speed = Math.hypot(vx, vy);
 
-            if (speed < 0.03) {
+            if (speed < 0.01) {
                 ball.setVelocity(0, 0);
+            } else if (speed < 0.5) {
+                ball.setVelocity(vx * 0.98, vy * 0.98);
             } else {
-                ball.setVelocity(vx * 0.995, vy * 0.995);
+                ball.setVelocity(vx * 0.99, vy * 0.99);
             }
         });
     });
@@ -112,6 +139,7 @@ this.matter.world.on("beforeupdate", () => {
                 balls.splice(index, 1);
                 scene.matter.world.remove(ball.body);
                 ball.destroy();
+                setBallPocketed(true); // Marca que uma bola foi encaçapada
             }
         };
 
@@ -133,10 +161,25 @@ this.matter.world.on("beforeupdate", () => {
             }
         });
     });
+
+    this.matter.world.on("afterupdate", () => {
+        if (shotTaken && shotStarted && allBallsStopped) {
+            if (!getBallPocketed()) {
+                switchPlayer();
+            }
+            resetBallPocketedFlag();
+            updatePlayerDisplay();
+            shotTaken   = false;
+            shotStarted = false;
+        }
+    });
 }
 
 function update() {
     const now = performance.now();
+
+    this.powerBar.setVisible(allBallsStopped && this.stickLocked);
+    this.powerSlider.setVisible(allBallsStopped && this.stickLocked);
 
     if (isStickAnimating) {
         const elapsed = now - stickAnimationStart;
@@ -152,18 +195,15 @@ function update() {
 
         if (t >= 1) {
             ball1.applyForce(queuedForce);
-
             isStickAnimating = false;
             this.stickLocked = false;
             this.powerValue = 0;
             this.stickDistance = 20;
-
             this.powerSlider.y = this.powerBar.y - this.powerBar.height / 2;
-
             updateStickPosition(this, this.input.activePointer);
+
+            shotTaken = true;  // A shot was triggered
+            shotStarted = false; // … but we haven’t moved the ball yet
         }
     }
-
-    this.powerBar.setVisible(this.stickLocked);
-    this.powerSlider.setVisible(this.stickLocked);
 }

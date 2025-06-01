@@ -1,36 +1,47 @@
 function createStick(scene, x, y) {
     const stick = scene.add.image(x, y, "stick");
     stick.setOrigin(0.5, 0);
+    stick.setVisible(false);
     return stick;
 }
 
 function updateStickPosition(scene, pointer) {
     stick.setVisible(false);
+    scene.trajectoryLine.clear();
+    scene.shadowBall.setVisible(false);
     ball1 = balls[0];
 
-    if (!ball1.body.velocity.x && !ball1.body.velocity.y) {
+    let allStopped = true;
+    for (let i = 0; i < balls.length; i++) {
+        if (balls[i].body.velocity.x !== 0 || balls[i].body.velocity.y !== 0) {
+            allStopped = false;
+            break;
+        }
+    }
+
+    if (allStopped) {
         stick.setVisible(true);
+        const distance = scene.stickDistance;
+
+        if (scene.stickLocked) {
+            const angle = stick.rotation - Phaser.Math.DegToRad(90);
+            stick.x = ball1.x + Math.cos(angle) * -distance;
+            stick.y = ball1.y + Math.sin(angle) * -distance;
+            updateTrajectoryLine(scene); // Update trajectory when locked and stopped
+            return;
+        }
+
+        const dx = pointer.x - ball1.x;
+        const dy = pointer.y - ball1.y;
+        const angle = Math.atan2(dy, dx);
+
+        stick.rotation = angle - Math.PI / 2;
+
+        stick.x = ball1.x + Math.cos(angle) * distance;
+        stick.y = ball1.y + Math.sin(angle) * distance;
+
+        updateTrajectoryLine(scene);
     }
-
-    const distance = scene.stickDistance;
-
-    if (scene.stickLocked) {
-        const angle = stick.rotation - Phaser.Math.DegToRad(90);
-        stick.x = ball1.x + Math.cos(angle) * -distance;
-        stick.y = ball1.y + Math.sin(angle) * -distance;
-        return;
-    }
-
-    const dx = pointer.x - ball1.x;
-    const dy = pointer.y - ball1.y;
-    const angle = Math.atan2(dy, dx);
-
-    stick.rotation = angle - Math.PI / 2;
-
-    stick.x = ball1.x + Math.cos(angle) * distance;
-    stick.y = ball1.y + Math.sin(angle) * distance;
-
-    updateTrajectoryLine(scene);
 }
 
 function updateTrajectoryLine(scene) {
@@ -136,7 +147,7 @@ function getRayCircleIntersection(rayOrigin, rayDir, circleCenter, radius) {
 function shootCueBall(scene) {
     if (!ball1) return;
 
-    const maxForce = 0.1;
+    const maxForce = 0.15;
     const force = scene.powerValue * maxForce;
 
     const angle = stick.rotation - Phaser.Math.DegToRad(90);
@@ -152,6 +163,7 @@ function shootCueBall(scene) {
     stickAnimationStart = performance.now();
 
     scene.trajectoryLine.clear();
+    scene.shadowBall.setVisible(false); // Ensure shadow ball is hidden on shoot
 
     isStickAnimating = true;
 }
