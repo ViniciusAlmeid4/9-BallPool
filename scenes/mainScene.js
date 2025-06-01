@@ -157,6 +157,13 @@ function create() {
             if (ballBody) {
                 const ballSprite = balls.find((b) => b.body === ballBody);
                 if (ballSprite) {
+                    if (
+                        !colorAssigned &&
+                        (ballSprite.texture.key === "ballRed" ||
+                            ballSprite.texture.key === "ballBlue")
+                    ) {
+                        assignPlayerColors(ballSprite.texture.key);
+                    }
                     removeBallFromWorld(this, ballSprite);
                 }
             }
