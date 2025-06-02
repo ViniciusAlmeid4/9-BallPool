@@ -22,6 +22,7 @@ let shotTaken = false;
 let shotStarted = false;
 let allBallsStopped = true;
 let lastPocketedBallColor = null;
+const ball1InitialPosition = { x: 300, y: 360 };
 
 function preload() {
     this.load.image("table", "assets/table.png");
@@ -136,18 +137,22 @@ function create() {
         }
 
         const removeBallFromWorld = (scene, ball) => {
-            const index = balls.indexOf(ball);
-            if (index !== -1) {
-                balls.splice(index, 1);
-                scene.matter.world.remove(ball.body);
-                ball.destroy();
-                setBallPocketed(true); // Marca que uma bola foi encaçapada
-                if (ball.color) {
-                    lastPocketedBallColor = ball.color; // Salva a cor da última bola encaçapada
+            if (ball.isWhite) {
+                resetCueBall(scene); // Reseta a bola branca
+            } else {
+                const index = balls.indexOf(ball);
+                if (index !== -1) {
+                    balls.splice(index, 1);
+                    scene.matter.world.remove(ball.body);
+                    ball.destroy();
+                    setBallPocketed(true);
+                    if (ball.color) {
+                        lastPocketedBallColor = ball.color;
+                    }
                 }
-            }
 
-            checkVictory(scene, ball);
+                checkVictory(scene, ball); // Garante verificação de vitória após encaçapamento
+            }
         };
 
         event.pairs.forEach((pair) => {
@@ -265,4 +270,26 @@ function showVictoryText(scene, message) {
         .setDepth(10);
 
     scene.input.enabled = false; // Bloqueia entrada após vitória
+}
+
+function resetCueBall(scene) {
+    // Remove a bola branca atual da física e da cena
+    scene.matter.world.remove(ball1.body);
+    ball1.destroy();
+
+    // Recria a bola branca na posição inicial
+    ball1 = scene.matter.add.image(
+        ball1InitialPosition.x,
+        ball1InitialPosition.y,
+        "ballWhite"
+    );
+    ball1.setCircle(20);
+    ball1.setFriction(0);
+    ball1.setFrictionAir(0.0025);
+    ball1.setBounce(0.9);
+    ball1.isWhite = true;
+
+    // Atualiza o array balls: remove qualquer referência duplicada e adiciona no início
+    balls = balls.filter((b) => !b.isWhite);
+    balls.unshift(ball1);
 }
