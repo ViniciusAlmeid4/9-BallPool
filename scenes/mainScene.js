@@ -182,6 +182,8 @@ function create() {
     });
 
     this.matter.world.on("afterupdate", () => {
+        updateStickPosition(this, this.input.activePointer);
+
         if (shotTaken && shotStarted && allBallsStopped) {
             if (getBallPocketed()) {
                 if (!shouldKeepTurn(lastPocketedBallColor)) {
@@ -224,7 +226,6 @@ function update() {
             this.powerValue = 0;
             this.stickDistance = 20;
             this.powerSlider.y = this.powerBar.y - this.powerBar.height / 2;
-            updateStickPosition(this, this.input.activePointer);
 
             shotTaken = true; // A shot was triggered
             shotStarted = false; // … but we haven’t moved the ball yet
