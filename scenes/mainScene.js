@@ -223,4 +223,9 @@ function update() {
             shotStarted = false; // … but we haven’t moved the ball yet
         }
     }
+
+    balls.forEach((ball) => {
+        ball.setAngle(0);
+        ball.setAngularVelocity(0);
+    });
 }
