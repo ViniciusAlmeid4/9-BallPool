@@ -146,6 +146,8 @@ function create() {
                     lastPocketedBallColor = ball.color; // Salva a cor da última bola encaçapada
                 }
             }
+
+            checkVictory(scene, ball);
         };
 
         event.pairs.forEach((pair) => {
@@ -228,4 +230,39 @@ function update() {
         ball.setAngle(0);
         ball.setAngularVelocity(0);
     });
+}
+
+function checkVictory(scene, pocketedBall) {
+    if (!colorAssigned) return; // ainda não temos cores atribuídas
+
+    const playerColor = getPlayerColor(currentPlayer);
+    const opponent = currentPlayer === 1 ? 2 : 1;
+
+    // Contar quantas bolas da cor do jogador ainda estão na mesa
+    const remainingBalls = balls.filter(
+        (b) => b.color === (playerColor === "vermelho" ? "ballRed" : "ballBlue")
+    );
+
+    if (pocketedBall.texture.key === "ballYellow") {
+        if (remainingBalls.length === 0) {
+            showVictoryText(scene, `Jogador ${currentPlayer} venceu!`);
+        } else {
+            showVictoryText(scene, `Jogador ${opponent} venceu!`);
+        }
+    }
+}
+
+function showVictoryText(scene, message) {
+    const victoryText = scene.add
+        .text(620, 316, message, {
+            fontSize: "48px",
+            fill: "#fff",
+            backgroundColor: "#000",
+            padding: { x: 20, y: 10 },
+            align: "center",
+        })
+        .setOrigin(0.5)
+        .setDepth(10);
+
+    scene.input.enabled = false; // Bloqueia entrada após vitória
 }
