@@ -21,6 +21,8 @@ let canSwitchPlayer = false; // Flag para controlar o momento da troca de jogado
 let shotTaken = false;
 let shotStarted = false;
 let allBallsStopped = true;
+let lastPocketedBallColor = null;
+const ball1InitialPosition = { x: 300, y: 360 };
 
 function preload() {
     this.load.image("table", "assets/table.png");
@@ -135,12 +137,21 @@ function create() {
         }
 
         const removeBallFromWorld = (scene, ball) => {
-            const index = balls.indexOf(ball);
-            if (index !== -1) {
-                balls.splice(index, 1);
-                scene.matter.world.remove(ball.body);
-                ball.destroy();
-                setBallPocketed(true); // Marca que uma bola foi encaçapada
+            if (ball.isWhite) {
+                resetCueBall(scene); // Reseta a bola branca
+            } else {
+                const index = balls.indexOf(ball);
+                if (index !== -1) {
+                    balls.splice(index, 1);
+                    scene.matter.world.remove(ball.body);
+                    ball.destroy();
+                    setBallPocketed(true);
+                    if (ball.color) {
+                        lastPocketedBallColor = ball.color;
+                    }
+                }
+
+                checkVictory(scene, ball); // Garante verificação de vitória após encaçapamento
             }
         };
 
@@ -157,6 +168,13 @@ function create() {
             if (ballBody) {
                 const ballSprite = balls.find((b) => b.body === ballBody);
                 if (ballSprite) {
+                    if (
+                        !colorAssigned &&
+                        (ballSprite.texture.key === "ballRed" ||
+                            ballSprite.texture.key === "ballBlue")
+                    ) {
+                        assignPlayerColors(ballSprite.texture.key);
+                    }
                     removeBallFromWorld(this, ballSprite);
                 }
             }
@@ -165,9 +183,14 @@ function create() {
 
     this.matter.world.on("afterupdate", () => {
         if (shotTaken && shotStarted && allBallsStopped) {
-            if (!getBallPocketed()) {
+            if (getBallPocketed()) {
+                if (!shouldKeepTurn(lastPocketedBallColor)) {
+                    switchPlayer();
+                }
+            } else {
                 switchPlayer();
             }
+            lastPocketedBallColor = null;
             resetBallPocketedFlag();
             updatePlayerDisplay();
             shotTaken = false;
@@ -207,4 +230,66 @@ function update() {
             shotStarted = false; // … but we haven’t moved the ball yet
         }
     }
+
+    balls.forEach((ball) => {
+        ball.setAngle(0);
+        ball.setAngularVelocity(0);
+    });
+}
+
+function checkVictory(scene, pocketedBall) {
+    if (!colorAssigned) return; // ainda não temos cores atribuídas
+
+    const playerColor = getPlayerColor(currentPlayer);
+    const opponent = currentPlayer === 1 ? 2 : 1;
+
+    // Contar quantas bolas da cor do jogador ainda estão na mesa
+    const remainingBalls = balls.filter(
+        (b) => b.color === (playerColor === "vermelho" ? "ballRed" : "ballBlue")
+    );
+
+    if (pocketedBall.texture.key === "ballYellow") {
+        if (remainingBalls.length === 0) {
+            showVictoryText(scene, `Jogador ${currentPlayer} venceu!`);
+        } else {
+            showVictoryText(scene, `Jogador ${opponent} venceu!`);
+        }
+    }
+}
+
+function showVictoryText(scene, message) {
+    const victoryText = scene.add
+        .text(620, 316, message, {
+            fontSize: "48px",
+            fill: "#fff",
+            backgroundColor: "#000",
+            padding: { x: 20, y: 10 },
+            align: "center",
+        })
+        .setOrigin(0.5)
+        .setDepth(10);
+
+    scene.input.enabled = false; // Bloqueia entrada após vitória
+}
+
+function resetCueBall(scene) {
+    // Remove a bola branca atual da física e da cena
+    scene.matter.world.remove(ball1.body);
+    ball1.destroy();
+
+    // Recria a bola branca na posição inicial
+    ball1 = scene.matter.add.image(
+        ball1InitialPosition.x,
+        ball1InitialPosition.y,
+        "ballWhite"
+    );
+    ball1.setCircle(20);
+    ball1.setFriction(0);
+    ball1.setFrictionAir(0.0025);
+    ball1.setBounce(0.9);
+    ball1.isWhite = true;
+
+    // Atualiza o array balls: remove qualquer referência duplicada e adiciona no início
+    balls = balls.filter((b) => !b.isWhite);
+    balls.unshift(ball1);
 }

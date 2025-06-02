@@ -31,8 +31,8 @@ function updateStickPosition(scene, pointer) {
             return;
         }
 
-        const dx = pointer.x - ball1.x;
-        const dy = pointer.y - ball1.y;
+        const dx = -pointer.x + ball1.x;
+        const dy = -pointer.y + ball1.y;
         const angle = Math.atan2(dy, dx);
 
         stick.rotation = angle - Math.PI / 2;
