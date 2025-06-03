@@ -2,7 +2,7 @@ const config = {
     type: Phaser.AUTO,
     width: 1360,
     height: 768,
-    backgroundColor: "#1d1d1d",
+    backgroundColor: "#011f1a",
     physics: {
         default: "matter",
         matter: {
