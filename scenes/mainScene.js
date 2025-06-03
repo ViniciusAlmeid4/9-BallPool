@@ -65,7 +65,6 @@ function create() {
     this.add.image(620, 316.5, "table").setDepth(-1);
 
     this.pocketSound = this.sound.add("pocketSound");
-
     playerManager = createPlayerDisplay(this);
 
     this.input.on("pointermove", (pointer) => {
@@ -139,7 +138,6 @@ function create() {
     });
 
     this.matter.world.on("collisionstart", (event) => {
-        
         function isBall(body) {
             return balls.some((b) => b.body === body);
         }
@@ -164,15 +162,15 @@ function create() {
                     scene.matter.world.remove(ball.body);
                     ball.destroy();
         
-                    // 🎵 Tocar som da bola na caçapa
                     scene.pocketSound.play();
         
                     setBallPocketed(true);
-        
+
                     if (ball.color) {
                         lastPocketedBallColor = ball.color;
                     }
                 }
+              
                 checkVictory(scene, ball);
             }
         };
@@ -204,6 +202,8 @@ function create() {
     });
 
     this.matter.world.on("afterupdate", () => {
+        updateStickPosition(this, this.input.activePointer);
+
         if (shotTaken && shotStarted && allBallsStopped) {
             if (getBallPocketed()) {
                 if (!shouldKeepTurn(lastPocketedBallColor)) {
@@ -241,13 +241,14 @@ function update() {
 
         if (t >= 1) {
             ball1.applyForce(queuedForce);
+
             this.sound.play("shot");
+
             isStickAnimating = false;
             this.stickLocked = false;
             this.powerValue = 0;
             this.stickDistance = 20;
             this.powerSlider.y = this.powerBar.y - this.powerBar.height / 2;
-            updateStickPosition(this, this.input.activePointer);
 
             shotTaken = true; // A shot was triggered
             shotStarted = false; // … but we haven’t moved the ball yet
