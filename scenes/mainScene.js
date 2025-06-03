@@ -35,6 +35,15 @@ function preload() {
     this.load.image("powerBar", "assets/powerBar.png");
     this.load.image("powerSlider", "assets/powerSlider.png");
     this.load.image("shadowBall", "assets/shadowBall.png");
+
+    // Efetos sonoros;
+    this.load.audio("shot", "assets/shot.mp3");
+    this.load.audio("ballHit", "assets/ballHit.mp3");
+    this.load.audio("pocketSound", "assets/pocket.mp3");
+
+    this.load.on('loaderror', (file) => {
+        console.error(`Erro ao carregar: ${file.key}, URL: ${file.src}`);
+    });
 }
 
 function create() {
@@ -55,6 +64,7 @@ function create() {
 
     this.add.image(680, 409, "table").setDepth(-1);
 
+    this.pocketSound = this.sound.add("pocketSound");
     playerManager = createPlayerDisplay(this);
 
     this.input.on("pointermove", (pointer) => {
@@ -137,21 +147,31 @@ function create() {
         }
 
         const removeBallFromWorld = (scene, ball) => {
+            if (scene.pocketSound) {
+                scene.pocketSound.play();
+            } else {
+                console.warn("⚠️ pocketSound não carregado");
+            }
+            
             if (ball.isWhite) {
-                resetCueBall(scene); // Reseta a bola branca
+                resetCueBall(scene);
             } else {
                 const index = balls.indexOf(ball);
                 if (index !== -1) {
                     balls.splice(index, 1);
                     scene.matter.world.remove(ball.body);
                     ball.destroy();
+        
+                    scene.pocketSound.play();
+        
                     setBallPocketed(true);
+
                     if (ball.color) {
                         lastPocketedBallColor = ball.color;
                     }
                 }
-
-                checkVictory(scene, ball); // Garante verificação de vitória após encaçapamento
+              
+                checkVictory(scene, ball);
             }
         };
 
@@ -221,6 +241,9 @@ function update() {
 
         if (t >= 1) {
             ball1.applyForce(queuedForce);
+
+            this.sound.play("shot");
+
             isStickAnimating = false;
             this.stickLocked = false;
             this.powerValue = 0;
