@@ -8,13 +8,13 @@ function createPockets(scene) {
         entryPoints = [];
 
     const positions = [
-        { x: pocketOffset, y: pocketOffset },
-        { x: width / 2, y: pocketOffset - 28 },
-        { x: width - pocketOffset, y: pocketOffset },
-        { x: pocketOffset, y: height - pocketOffset },
-        { x: width / 2, y: height - pocketOffset + 28 },
-        { x: width - pocketOffset, y: height - pocketOffset },
-    ];
+        { x: 128, y: 654 }, // bottom left
+        { x: 679.5, y: 678 }, // bottom center
+        { x: 1230, y: 162 }, // top right
+        { x: 128, y: 162 }, // top left
+        { x: 679.5, y: 140 },
+        { x: 1230, y: 654 },
+    ]
 
     positions.forEach((pos, index) => {
         const pocket = scene.matter.add.image(pos.x, pos.y, "pocket", null, {

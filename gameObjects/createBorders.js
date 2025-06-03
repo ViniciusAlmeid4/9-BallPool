@@ -1,94 +1,64 @@
-function createBorders(mainScene){
+function createBorders(mainScene) {
     const graphics = mainScene.add.graphics();
     // graphics.fillStyle(0xffffff, 1); // White, fully opaque
 
     // // Top barrier (left segment)
     mainScene.matter.add.rectangle(
-        347.5, // center x
-        55,    // center y
-        468,   // width
-        40,    // height
+        408, // center x
+        149, // center y
+        468, // width
+        40, // height
         { isStatic: true, restitution: 1, label: "barrier" }
     );
-    // graphics.fillRect(
-    //     347.5 - 468 / 2,
-    //     55 - 40 / 2,
-    //     468,
-    //     40
-    // );
+    // graphics.fillRect(408 - 468 / 2, 149 - 40 / 2, 468, 40);
 
     // Top barrier (right segment)
     mainScene.matter.add.rectangle(
-        891.5, // center x
-        55,    // center y
-        468,   // width
-        40,    // height
+        952, // center x
+        149, // center y
+        468, // width
+        40, // height
         { isStatic: true, restitution: 1, label: "barrier" }
     );
-    // graphics.fillRect(
-    //     891.5 - 468 / 2,
-    //     55 - 40 / 2,
-    //     468,
-    //     40
-    // );
+    // graphics.fillRect(952 - 468 / 2, 149 - 40 / 2, 468, 40);
 
     // Bottom barrier (right segment)
     mainScene.matter.add.rectangle(
-        891.5, // center x
-        577,   // center y
+        951.5, // center x
+        669, // center y
         468,
         40,
         { isStatic: true, restitution: 1, label: "barrier" }
     );
-    // graphics.fillRect(
-    //     891.5 - 468 / 2,
-    //     577 - 40 / 2,
-    //     468,
-    //     40
-    // );
+    // graphics.fillRect(951.5 - 468 / 2, 669 - 40 / 2, 468, 40);
 
     // Bottom barrier (left segment)
     mainScene.matter.add.rectangle(
-        347.5, // center x
-        577,   // center y
+        407.5, // center x
+        669, // center y
         468,
         40,
         { isStatic: true, restitution: 1, label: "barrier" }
     );
-    // graphics.fillRect(
-    //     347.5 - 468 / 2,
-    //     577 - 40 / 2,
-    //     468,
-    //     40
-    // );
+    // graphics.fillRect(407.5 - 468 / 2, 669 - 40 / 2, 468, 40);
 
     // Left barrier
     mainScene.matter.add.rectangle(
-        56,
-        316,
-        40,
-        404,
+        116, 
+        409, 
+        40, 
+        404, 
         { isStatic: true, restitution: 1, label: "barrier" }
     );
-    // graphics.fillRect(
-    //     56 - 40 / 2,
-    //     316 - 404 / 2,
-    //     40,
-    //     404
-    // );
+    // graphics.fillRect(116 - 40 / 2, 409 - 404 / 2, 40, 404);
 
     // Right barrier
     mainScene.matter.add.rectangle(
-        1184,
-        316,
+        1244, // + 60
+        409, // + 93
         40,
         404,
         { isStatic: true, restitution: 1, label: "barrier" }
     );
-    // graphics.fillRect(
-    //     1184 - 40 / 2,
-    //     316 - 404 / 2,
-    //     40,
-    //     404
-    // );
+    // graphics.fillRect(1244 - 40 / 2, 409 - 404 / 2, 40, 404);
 }

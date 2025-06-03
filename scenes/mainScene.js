@@ -49,11 +49,11 @@ function create() {
     this.matter.world.engine.velocityIterations = 10;
     Matter.Resolver._restingThresh = 0.001;
 
-    this.matter.world.setBounds(0, 0, 1240, 633, 100, true, true, true, true);
+    this.matter.world.setBounds(0, 0, 1360, 768, 100, true, true, true, true);
 
     createBorders(this);
 
-    this.add.image(620, 316.5, "table").setDepth(-1);
+    this.add.image(680, 409, "table").setDepth(-1);
 
     playerManager = createPlayerDisplay(this);
 
