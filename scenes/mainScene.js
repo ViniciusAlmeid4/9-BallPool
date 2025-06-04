@@ -158,9 +158,9 @@ function create() {
             if (speed < 0.01) {
                 ball.setVelocity(0, 0);
             } else if (speed < 0.5) {
-                ball.setVelocity(vx * 0.98, vy * 0.98);
+                ball.setVelocity(vx * 0.985, vy * 0.99);
             } else {
-                ball.setVelocity(vx * 0.99, vy * 0.99);
+                ball.setVelocity(vx * 0.99, vy * 0.995);
             }
         });
     });
