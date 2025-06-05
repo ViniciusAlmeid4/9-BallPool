@@ -98,4 +98,30 @@ function createBorders(mainScene) {
         angle: Phaser.Math.DegToRad(-135),
     });
     drawRotatedRect(graphics, 1253, 624, funnelLength, funnelThickness, Phaser.Math.DegToRad(-135));
+
+    // === BOTTOM-MIDDLE funnel
+    mainScene.matter.add.rectangle(626, 678, funnelLength, funnelThickness, {
+        ...funnelOptions,
+        angle: Phaser.Math.DegToRad(140),
+    });
+    // drawRotatedRect(graphics, 626, 678, funnelLength, funnelThickness, Phaser.Math.DegToRad(140));
+
+    mainScene.matter.add.rectangle(1253, 624, funnelLength, funnelThickness, {
+        ...funnelOptions,
+        angle: Phaser.Math.DegToRad(-140),
+    });
+    // drawRotatedRect(graphics, 734, 678, funnelLength, funnelThickness, Phaser.Math.DegToRad(-140));
+
+    // === TOP-MIDDLE funnel
+    mainScene.matter.add.rectangle(626, 678, funnelLength, funnelThickness, {
+        ...funnelOptions,
+        angle: Phaser.Math.DegToRad(45),
+    });
+    drawRotatedRect(graphics, 627, 139, funnelLength, funnelThickness, Phaser.Math.DegToRad(45));
+
+    mainScene.matter.add.rectangle(1253, 624, funnelLength, funnelThickness, {
+        ...funnelOptions,
+        angle: Phaser.Math.DegToRad(-45),
+    });
+    drawRotatedRect(graphics, 733, 139, funnelLength, funnelThickness, Phaser.Math.DegToRad(-45));
 }
