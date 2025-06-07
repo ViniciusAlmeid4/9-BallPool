@@ -10,6 +10,10 @@ function updateStickPosition(scene, pointer) {
     scene.trajectoryLine.clear();
     scene.shadowBall.setVisible(false);
     ball1 = balls[0];
+    
+    if(scene.isResetingCueBall) {
+        return;
+    }
 
     let allStopped = true;
     for (let i = 0; i < balls.length; i++) {
