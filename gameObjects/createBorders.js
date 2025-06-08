@@ -3,34 +3,54 @@ function createBorders(mainScene) {
     // graphics.fillStyle(0xffffff, 1); // White, fully opaque
 
     // // Top barrier (left segment)
-    mainScene.matter.add.rectangle(408, 149, 468, 40, { isStatic: true, restitution: 1, label: "barrier" });
-    graphics.fillRect(408 - 468 / 2, 149 - 40 / 2, 468, 40);
+    mainScene.matter.add.rectangle(408, 149, 458, 40, {
+        isStatic: true,
+        restitution: 1,
+        label: "barrier",
+    });
+    graphics.fillRect(408 - 458 / 2, 149 - 40 / 2, 458, 40);
 
     // Top barrier (right segment)
-    mainScene.matter.add.rectangle(952, 149, 468, 40, { isStatic: true, restitution: 1, label: "barrier" });
-    graphics.fillRect(952 - 468 / 2, 149 - 40 / 2, 468, 40);
+    mainScene.matter.add.rectangle(952, 149, 458, 40, {
+        isStatic: true,
+        restitution: 1,
+        label: "barrier",
+    });
+    graphics.fillRect(952 - 458 / 2, 149 - 40 / 2, 458, 40);
 
     // Bottom barrier (right segment)
-    mainScene.matter.add.rectangle(952, 669, 468, 40, { isStatic: true, restitution: 1, label: "barrier" });
-    graphics.fillRect(952 - 468 / 2, 669 - 40 / 2, 468, 40);
+    mainScene.matter.add.rectangle(952, 669, 458, 40, {
+        isStatic: true,
+        restitution: 1,
+        label: "barrier",
+    });
+    graphics.fillRect(952 - 458 / 2, 669 - 40 / 2, 458, 40);
 
     // Bottom barrier (left segment)
-    mainScene.matter.add.rectangle(408, 669, 468, 40, { isStatic: true, restitution: 1, label: "barrier" });
-    graphics.fillRect(408 - 468 / 2, 669 - 40 / 2, 468, 40);
+    mainScene.matter.add.rectangle(408, 669, 458, 40, {
+        isStatic: true,
+        restitution: 1,
+        label: "barrier",
+    });
+    graphics.fillRect(408 - 458 / 2, 669 - 40 / 2, 458, 40);
 
     // Left barrier
-    mainScene.matter.add.rectangle(116, 409, 40, 404, { isStatic: true, restitution: 1, label: "barrier" });
-    graphics.fillRect(116 - 40 / 2, 409 - 404 / 2, 40, 404);
+    mainScene.matter.add.rectangle(116, 409, 40, 394, {
+        isStatic: true,
+        restitution: 1,
+        label: "barrier",
+    });
+    graphics.fillRect(116 - 40 / 2, 409 - 394 / 2, 40, 394);
 
     // Right barrier
     mainScene.matter.add.rectangle(
         1244, // + 60
         409, // + 93
         40,
-        404,
+        394,
         { isStatic: true, restitution: 1, label: "barrier" }
     );
-    graphics.fillRect(1244 - 40 / 2, 409 - 404 / 2, 40, 404);
+    graphics.fillRect(1244 - 40 / 2, 409 - 394 / 2, 40, 394);
 
     /* ---------- CORNERS ---------- */
 
@@ -48,80 +68,164 @@ function createBorders(mainScene) {
     }
 
     // === TOP-LEFT corner funnel
-    mainScene.matter.add.rectangle(160, 140, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(170, 138, funnelLength, funnelThickness, {
         ...funnelOptions,
-        angle: Phaser.Math.DegToRad(45),
+        angle: Phaser.Math.DegToRad(55),
     });
-    drawRotatedRect(graphics, 160, 140, funnelLength, funnelThickness, Phaser.Math.DegToRad(45));
+    drawRotatedRect(
+        graphics,
+        170,
+        138,
+        funnelLength,
+        funnelThickness,
+        Phaser.Math.DegToRad(55)
+    );
 
-    mainScene.matter.add.rectangle(104, 190, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(106, 205, funnelLength, funnelThickness, {
         ...funnelOptions,
-        angle: Phaser.Math.DegToRad(45),
+        angle: Phaser.Math.DegToRad(35),
     });
-    drawRotatedRect(graphics, 107, 194, funnelLength, funnelThickness, Phaser.Math.DegToRad(45));
+    drawRotatedRect(
+        graphics,
+        106,
+        205,
+        funnelLength,
+        funnelThickness,
+        Phaser.Math.DegToRad(35)
+    );
 
     // === TOP-RIGHT corner funnel
-    mainScene.matter.add.rectangle(1178, 140, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(1190, 138, funnelLength, funnelThickness, {
         ...funnelOptions,
-        angle: Phaser.Math.DegToRad(135),
+        angle: Phaser.Math.DegToRad(125),
     });
-    drawRotatedRect(graphics, 1199, 140, funnelLength, funnelThickness, Phaser.Math.DegToRad(135));
+    drawRotatedRect(
+        graphics,
+        1190,
+        138,
+        funnelLength,
+        funnelThickness,
+        Phaser.Math.DegToRad(125)
+    );
 
-    mainScene.matter.add.rectangle(1252, 194, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(1255, 204, funnelLength, funnelThickness, {
         ...funnelOptions,
-        angle: Phaser.Math.DegToRad(135),
+        angle: Phaser.Math.DegToRad(145),
     });
-    drawRotatedRect(graphics, 1253, 194, funnelLength, funnelThickness, Phaser.Math.DegToRad(135));
+    drawRotatedRect(
+        graphics,
+        1255,
+        204,
+        funnelLength,
+        funnelThickness,
+        Phaser.Math.DegToRad(145)
+    );
 
     // === BOTTOM-LEFT corner funnel
-    mainScene.matter.add.rectangle(160, 678, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(170, 680, funnelLength, funnelThickness, {
         ...funnelOptions,
-        angle: Phaser.Math.DegToRad(-45),
+        angle: Phaser.Math.DegToRad(-55),
     });
-    drawRotatedRect(graphics, 160, 678, funnelLength, funnelThickness, Phaser.Math.DegToRad(-45));
+    drawRotatedRect(
+        graphics,
+        170,
+        680,
+        funnelLength,
+        funnelThickness,
+        Phaser.Math.DegToRad(-55)
+    );
 
-    mainScene.matter.add.rectangle(140, 720, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(105, 615, funnelLength, funnelThickness, {
         ...funnelOptions,
-        angle: Phaser.Math.DegToRad(-45),
+        angle: Phaser.Math.DegToRad(-35),
     });
-    drawRotatedRect(graphics, 107, 624, funnelLength, funnelThickness, Phaser.Math.DegToRad(-45));
+    drawRotatedRect(
+        graphics,
+        105,
+        615,
+        funnelLength,
+        funnelThickness,
+        Phaser.Math.DegToRad(-35)
+    );
 
     // === BOTTOM-RIGHT corner funnel
-    mainScene.matter.add.rectangle(1199, 678, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(1190, 680, funnelLength, funnelThickness, {
         ...funnelOptions,
-        angle: Phaser.Math.DegToRad(-135),
+        angle: Phaser.Math.DegToRad(-125),
     });
-    drawRotatedRect(graphics, 1199, 678, funnelLength, funnelThickness, Phaser.Math.DegToRad(-135));
+    drawRotatedRect(
+        graphics,
+        1190,
+        680,
+        funnelLength,
+        funnelThickness,
+        Phaser.Math.DegToRad(-125)
+    );
 
-    mainScene.matter.add.rectangle(1253, 624, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(1255, 615, funnelLength, funnelThickness, {
         ...funnelOptions,
-        angle: Phaser.Math.DegToRad(-135),
+        angle: Phaser.Math.DegToRad(-145),
     });
-    drawRotatedRect(graphics, 1253, 624, funnelLength, funnelThickness, Phaser.Math.DegToRad(-135));
+    drawRotatedRect(
+        graphics,
+        1255,
+        615,
+        funnelLength,
+        funnelThickness,
+        Phaser.Math.DegToRad(-145)
+    );
 
     // === BOTTOM-MIDDLE funnel
-    mainScene.matter.add.rectangle(626, 678, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(620, 676, funnelLength, funnelThickness, {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(140),
     });
-    // drawRotatedRect(graphics, 626, 678, funnelLength, funnelThickness, Phaser.Math.DegToRad(140));
+    drawRotatedRect(
+        graphics,
+        620,
+        676,
+        funnelLength,
+        funnelThickness,
+        Phaser.Math.DegToRad(140)
+    );
 
-    mainScene.matter.add.rectangle(1253, 624, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(741, 676, funnelLength, funnelThickness, {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(-140),
     });
-    // drawRotatedRect(graphics, 734, 678, funnelLength, funnelThickness, Phaser.Math.DegToRad(-140));
+    drawRotatedRect(
+        graphics,
+        741,
+        676,
+        funnelLength,
+        funnelThickness,
+        Phaser.Math.DegToRad(-140)
+    );
 
     // === TOP-MIDDLE funnel
-    mainScene.matter.add.rectangle(626, 678, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(620, 142, funnelLength, funnelThickness, {
         ...funnelOptions,
-        angle: Phaser.Math.DegToRad(45),
+        angle: Phaser.Math.DegToRad(40),
     });
-    drawRotatedRect(graphics, 627, 139, funnelLength, funnelThickness, Phaser.Math.DegToRad(45));
+    drawRotatedRect(
+        graphics,
+        620,
+        142,
+        funnelLength,
+        funnelThickness,
+        Phaser.Math.DegToRad(40)
+    );
 
-    mainScene.matter.add.rectangle(1253, 624, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(741, 142, funnelLength, funnelThickness, {
         ...funnelOptions,
-        angle: Phaser.Math.DegToRad(-45),
+        angle: Phaser.Math.DegToRad(-40),
     });
-    drawRotatedRect(graphics, 733, 139, funnelLength, funnelThickness, Phaser.Math.DegToRad(-45));
+    drawRotatedRect(
+        graphics,
+        741,
+        142,
+        funnelLength,
+        funnelThickness,
+        Phaser.Math.DegToRad(-40)
+    );
 }

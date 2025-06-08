@@ -46,7 +46,7 @@ function preload() {
     this.load.audio("jukebox2", "assets/jukebox2.mp3");
     this.load.audio("jukebox3", "assets/jukebox3.mp3");
 
-    this.load.on('loaderror', (file) => {
+    this.load.on("loaderror", (file) => {
         console.error(`Erro ao carregar: ${file.key}, URL: ${file.src}`);
     });
 }
@@ -75,7 +75,7 @@ function create() {
         const musicKey = playlist[currentTrack];
         this.backgroundMusic = this.sound.add(musicKey, {
             volume: 0.3,
-            loop: false
+            loop: false,
         });
 
         this.backgroundMusic.play();
@@ -180,7 +180,7 @@ function create() {
             } else {
                 console.warn("⚠️ pocketSound não carregado");
             }
-            
+
             if (ball.isWhite) {
                 resetCueBall(scene);
             } else {
@@ -189,16 +189,16 @@ function create() {
                     balls.splice(index, 1);
                     scene.matter.world.remove(ball.body);
                     ball.destroy();
-        
+
                     scene.pocketSound.play();
-        
+
                     setBallPocketed(true);
 
                     if (ball.color) {
                         lastPocketedBallColor = ball.color;
                     }
                 }
-              
+
                 checkVictory(scene, ball);
             }
         };
@@ -295,10 +295,15 @@ function update() {
 }
 
 function checkVictory(scene, pocketedBall) {
-    if (!colorAssigned) return; // ainda não temos cores atribuídas
-
     const playerColor = getPlayerColor(currentPlayer);
     const opponent = currentPlayer === 1 ? 2 : 1;
+
+    if (pocketedBall.texture.key === "ballYellow" && !colorAssigned) {
+        showVictoryText(scene, `Jogador ${opponent} venceu!`);
+        return;
+    }
+
+    if (!colorAssigned) return; // ainda não temos cores atribuídas
 
     // Contar quantas bolas da cor do jogador ainda estão na mesa
     const remainingBalls = balls.filter(

@@ -147,7 +147,7 @@ function getRayCircleIntersection(rayOrigin, rayDir, circleCenter, radius) {
 function shootCueBall(scene) {
     if (!ball1) return;
 
-    const maxForce = 0.15;
+    const maxForce = 0.1;
     const force = scene.powerValue * maxForce;
 
     const angle = stick.rotation - Phaser.Math.DegToRad(90);
