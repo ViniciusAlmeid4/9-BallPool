@@ -5,7 +5,7 @@ function createBalls(scene) {
     ball1 = scene.matter.add.image(300, 360, "ballWhite");
     ball1.setCircle(20);
     ball1.setFriction(0);
-    ball1.setFrictionAir(0.0025);
+    ball1.setFrictionAir(0.0015);
     ball1.setBounce(0.9);
     ball1.isWhite = true;
     balls.push(ball1);
@@ -32,7 +32,7 @@ function createBalls(scene) {
     );
     yellowBall.setCircle(20);
     yellowBall.setFriction(0);
-    yellowBall.setFrictionAir(0.0025);
+    yellowBall.setFrictionAir(0.0015);
     yellowBall.setBounce(0.9);
     yellowBall.isYellow = true;
     balls.push(yellowBall);
