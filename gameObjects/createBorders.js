@@ -8,7 +8,7 @@ function createBorders(mainScene) {
         restitution: 1,
         label: "barrier",
     });
-    graphics.fillRect(408 - 458 / 2, 149 - 40 / 2, 458, 40);
+    // graphics.fillRect(408 - 458 / 2, 149 - 40 / 2, 458, 40);
 
     // Top barrier (right segment)
     mainScene.matter.add.rectangle(952, 149, 458, 40, {
@@ -16,7 +16,7 @@ function createBorders(mainScene) {
         restitution: 1,
         label: "barrier",
     });
-    graphics.fillRect(952 - 458 / 2, 149 - 40 / 2, 458, 40);
+    // graphics.fillRect(952 - 458 / 2, 149 - 40 / 2, 458, 40);
 
     // Bottom barrier (right segment)
     mainScene.matter.add.rectangle(952, 669, 458, 40, {
@@ -24,7 +24,7 @@ function createBorders(mainScene) {
         restitution: 1,
         label: "barrier",
     });
-    graphics.fillRect(952 - 458 / 2, 669 - 40 / 2, 458, 40);
+    // graphics.fillRect(952 - 458 / 2, 669 - 40 / 2, 458, 40);
 
     // Bottom barrier (left segment)
     mainScene.matter.add.rectangle(408, 669, 458, 40, {
@@ -32,7 +32,7 @@ function createBorders(mainScene) {
         restitution: 1,
         label: "barrier",
     });
-    graphics.fillRect(408 - 458 / 2, 669 - 40 / 2, 458, 40);
+    // graphics.fillRect(408 - 458 / 2, 669 - 40 / 2, 458, 40);
 
     // Left barrier
     mainScene.matter.add.rectangle(116, 409, 40, 394, {
@@ -40,7 +40,7 @@ function createBorders(mainScene) {
         restitution: 1,
         label: "barrier",
     });
-    graphics.fillRect(116 - 40 / 2, 409 - 394 / 2, 40, 394);
+    // graphics.fillRect(116 - 40 / 2, 409 - 394 / 2, 40, 394);
 
     // Right barrier
     mainScene.matter.add.rectangle(
@@ -50,7 +50,7 @@ function createBorders(mainScene) {
         394,
         { isStatic: true, restitution: 1, label: "barrier" }
     );
-    graphics.fillRect(1244 - 40 / 2, 409 - 394 / 2, 40, 394);
+    // graphics.fillRect(1244 - 40 / 2, 409 - 394 / 2, 40, 394);
 
     /* ---------- CORNERS ---------- */
 

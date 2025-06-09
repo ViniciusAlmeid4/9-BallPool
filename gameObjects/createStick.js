@@ -64,10 +64,10 @@ function updateTrajectoryLine(scene) {
 
     const cueBallRadius = ball1.displayWidth / 2;
 
+    // Check collision with balls
     for (let i = 1; i < balls.length; i++) {
         const otherBall = balls[i];
         const otherRadius = otherBall.displayWidth / 2;
-
         const inflatedRadius = cueBallRadius + otherRadius;
 
         const intersection = getRayCircleIntersection(
@@ -89,11 +89,26 @@ function updateTrajectoryLine(scene) {
         }
     }
 
+    // Check collision with table borders
+    const tableBounds = { left: 160, top: 193, right: 1200, bottom: 625 }; // 1180x620 from your table area
+
+    const borderIntersections = getRayAABBIntersections(rayOrigin, rayDir, tableBounds);
+
+    for (const point of borderIntersections) {
+        const dx = point.x - rayOrigin.x;
+        const dy = point.y - rayOrigin.y;
+        const distSq = dx * dx + dy * dy;
+
+        if (distSq < minDistSq) {
+            minDistSq = distSq;
+            closestIntersection = point;
+        }
+    }
+
     let endX, endY;
 
     if (closestIntersection) {
-        // Move 20 pixels back along the ray direction
-        endX = closestIntersection.x - rayDir.x;
+        endX = closestIntersection.x - rayDir.x; // pequeno recuo visual
         endY = closestIntersection.y - rayDir.y;
     } else {
         endX = rayOrigin.x + rayDir.x * 2000;
@@ -107,7 +122,6 @@ function updateTrajectoryLine(scene) {
     scene.trajectoryLine.lineTo(endX, endY);
     scene.trajectoryLine.strokePath();
 
-    // Shadow ball update
     scene.shadowBall.setPosition(endX, endY);
     scene.shadowBall.setVisible(true);
 }
@@ -170,4 +184,33 @@ function shootCueBall(scene) {
     scene.shadowBall.setVisible(false); // Ensure shadow ball is hidden on shoot
 
     isStickAnimating = true;
+}
+
+function getRayAABBIntersections(origin, dir, bounds) {
+    const points = [];
+
+    const invDirX = 1 / dir.x;
+    const invDirY = 1 / dir.y;
+
+    const tx1 = (bounds.left - origin.x) * invDirX;
+    const tx2 = (bounds.right - origin.x) * invDirX;
+
+    const ty1 = (bounds.top - origin.y) * invDirY;
+    const ty2 = (bounds.bottom - origin.y) * invDirY;
+
+    const tmin = Math.max(Math.min(tx1, tx2), Math.min(ty1, ty2));
+    const tmax = Math.min(Math.max(tx1, tx2), Math.max(ty1, ty2));
+
+    if (tmax < 0 || tmin > tmax) return points;
+
+    const t = tmin >= 0 ? tmin : tmax;
+
+    if (t >= 0) {
+        points.push({
+            x: origin.x + dir.x * t,
+            y: origin.y + dir.y * t,
+        });
+    }
+
+    return points;
 }
