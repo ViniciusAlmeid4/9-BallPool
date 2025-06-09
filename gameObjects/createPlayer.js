@@ -2,20 +2,49 @@ let currentPlayer = 1;
 let playerText;
 let hasBallPocketed = false;
 
-let player1Color = null;
-let player2Color = null;
 let colorAssigned = false;
+
+const player = {
+    color: null,
+    character: null,
+};
+
+const player1 = player;
+const player2 = player;
 
 const baianinho = {
     powerIsOn: false,
     player: null,
+    powersLeft: 1,
     usePower: function () {
+        if (!this.powersLeft) {
+            return {
+                result: false,
+                msg: "Não é possível utilizar mais essa habilidade.",
+            };
+        }
+        this.powersLeft--;
         this.powerIsOn = true;
+        let msg;
+        if (!this.powersLeft) {
+            msg = "Última habilidade.";
+        } else {
+            msg = `Restam mais ${this.powersLeft}.`;
+        }
+        return {
+            result: true,
+            msg: msg,
+        };
     },
     playerSelect: function (player) {
         this.player = player;
-    }
-}
+        if (currentPlayer === 1) {
+            player1.character = this;
+        } else {
+            player2.character = this;
+        }
+    },
+};
 
 function createPlayerDisplay(scene) {
     playerText = scene.add.text(560, -120, `Jogador ${currentPlayer}`, {
@@ -46,18 +75,18 @@ function assignPlayerColors(ballColor) {
     const color = ballColor === "ballRed" ? "vermelho" : "azul";
 
     if (currentPlayer === 1) {
-        player1Color = color;
-        player2Color = color === "vermelho" ? "azul" : "vermelho";
+        player1.color = color;
+        player2.color = color === "vermelho" ? "azul" : "vermelho";
     } else {
-        player2Color = color;
-        player1Color = color === "vermelho" ? "azul" : "vermelho";
+        player2.color = color;
+        player1.color = color === "vermelho" ? "azul" : "vermelho";
     }
 
     colorAssigned = true;
 }
 
 function getPlayerColor(player) {
-    return player === 1 ? player1Color : player2Color;
+    return player === 1 ? player1.color : player2.color;
 }
 
 function updatePlayerDisplay() {
