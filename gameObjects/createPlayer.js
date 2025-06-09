@@ -13,6 +13,7 @@ const player1 = player;
 const player2 = player;
 
 const baianinho = {
+    charName: "Baianinho",
     powerIsOn: false,
     player: null,
     powersLeft: 1,
@@ -55,9 +56,12 @@ function createPlayerDisplay(scene) {
 }
 
 function switchPlayer() {
-    if (baianinho.powerIsOn && currentPlayer == baianinho.player) {
+    if (currentPlayer === 1 && player1.character.charName == "Baianinho" && player1.character.powerIsOn) {
+        return;
+    } else if (currentPlayer === 2 && player2.character.charName == "Baianinho" && player2.character.powerIsOn) {
         return;
     }
+    
     currentPlayer = currentPlayer === 1 ? 2 : 1;
 }
 
