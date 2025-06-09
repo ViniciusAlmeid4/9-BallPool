@@ -55,6 +55,7 @@ function create() {
     this.stickLocked = false;
     this.stickDistance = 20;
     this.isDragging = false;
+    this.isResetingCueBall = false;
     this.powerValue = 0;
     this.trajectoryLine = this.add.graphics();
 
@@ -182,7 +183,15 @@ function create() {
             }
 
             if (ball.isWhite) {
-                resetCueBall(scene);
+                this.isResetingCueBall = true;
+                updateStickPosition(this, this.input.activePointer);
+                ball.setVisible(false);
+                setTimeout(() => {
+                    this.isResetingCueBall = false;
+                    updateStickPosition(this, this.input.activePointer);
+                    ball.setVisible(true);
+                    resetCueBall(scene);
+                }, 3000);
             } else {
                 const index = balls.indexOf(ball);
                 if (index !== -1) {
