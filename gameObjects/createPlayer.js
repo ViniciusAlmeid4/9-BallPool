@@ -6,6 +6,17 @@ let player1Color = null;
 let player2Color = null;
 let colorAssigned = false;
 
+const baianinho = {
+    powerIsOn: false,
+    player: null,
+    usePower: function () {
+        this.powerIsOn = true;
+    },
+    playerSelect: function (player) {
+        this.player = player;
+    }
+}
+
 function createPlayerDisplay(scene) {
     playerText = scene.add.text(560, -120, `Jogador ${currentPlayer}`, {
         fontSize: "24px",
@@ -15,6 +26,9 @@ function createPlayerDisplay(scene) {
 }
 
 function switchPlayer() {
+    if (baianinho.powerIsOn && currentPlayer == baianinho.player) {
+        return;
+    }
     currentPlayer = currentPlayer === 1 ? 2 : 1;
 }
 
