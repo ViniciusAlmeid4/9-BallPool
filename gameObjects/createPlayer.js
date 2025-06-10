@@ -57,8 +57,10 @@ function createPlayerDisplay(scene) {
 
 function switchPlayer() {
     if (currentPlayer === 1 && player1.character.charName == "Baianinho" && player1.character.powerIsOn) {
+        player1.character.powerIsOn = false;
         return;
     } else if (currentPlayer === 2 && player2.character.charName == "Baianinho" && player2.character.powerIsOn) {
+        player2.character.powerIsOn = false;
         return;
     }
     
