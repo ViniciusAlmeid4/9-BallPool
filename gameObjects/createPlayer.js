@@ -4,47 +4,51 @@ let hasBallPocketed = false;
 
 let colorAssigned = false;
 
-const player = {
-    color: null,
-    character: null,
-};
+const player = () => {
+    return {
+        color: null,
+        character: null,
+    }
+}
 
-const player1 = player;
-const player2 = player;
+const player1 = player();
+const player2 = player();
 
-const baianinho = {
-    charName: "Baianinho",
-    powerIsOn: false,
-    player: null,
-    powersLeft: 1,
-    usePower: function () {
-        if (!this.powersLeft) {
+const baianinho = () => {
+    return {
+        charName: "Baianinho",
+        powerIsOn: false,
+        player: null,
+        powersLeft: 1,
+        usePower: function () {
+            if (!this.powersLeft) {
+                return {
+                    result: false,
+                    msg: "Não é possível utilizar mais essa habilidade.",
+                };
+            }
+            this.powersLeft--;
+            this.powerIsOn = true;
+            let msg;
+            if (!this.powersLeft) {
+                msg = "Última habilidade.";
+            } else {
+                msg = `Restam mais ${this.powersLeft}.`;
+            }
             return {
-                result: false,
-                msg: "Não é possível utilizar mais essa habilidade.",
+                result: true,
+                msg: msg,
             };
-        }
-        this.powersLeft--;
-        this.powerIsOn = true;
-        let msg;
-        if (!this.powersLeft) {
-            msg = "Última habilidade.";
-        } else {
-            msg = `Restam mais ${this.powersLeft}.`;
-        }
-        return {
-            result: true,
-            msg: msg,
-        };
-    },
-    playerSelect: function (player) {
-        this.player = player;
-        if (currentPlayer === 1) {
-            player1.character = this;
-        } else {
-            player2.character = this;
-        }
-    },
+        },
+        playerSelect: function (player) {
+            this.player = player;
+            if (currentPlayer === 1) {
+                player1.character = baianinho();
+            } else {
+                player2.character = baianinho();
+            }
+        },
+    }
 };
 
 function createPlayerDisplay(scene) {
@@ -56,12 +60,11 @@ function createPlayerDisplay(scene) {
 }
 
 function switchPlayer() {
-    if (currentPlayer === 1 && player1.character.charName == "Baianinho" && player1.character.powerIsOn) {
+    if (currentPlayer === 1 && player1.character?.charName == "Baianinho" && player1.character.powerIsOn) {
         return;
-    } else if (currentPlayer === 2 && player2.character.charName == "Baianinho" && player2.character.powerIsOn) {
+    } else if (currentPlayer === 2 && player2.character?.charName == "Baianinho" && player2.character.powerIsOn) {
         return;
     }
-    
     currentPlayer = currentPlayer === 1 ? 2 : 1;
 }
 
@@ -77,7 +80,6 @@ function assignPlayerColors(ballColor) {
     if (colorAssigned) return; // só define uma vez
 
     const color = ballColor === "ballRed" ? "vermelho" : "azul";
-
     if (currentPlayer === 1) {
         player1.color = color;
         player2.color = color === "vermelho" ? "azul" : "vermelho";
