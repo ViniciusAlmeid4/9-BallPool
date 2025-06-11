@@ -1,4 +1,5 @@
 const mainScene = {
+    key: 'MainScene',
     preload,
     create,
     update,
