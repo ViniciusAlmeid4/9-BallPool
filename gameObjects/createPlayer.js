@@ -51,6 +51,9 @@ const baianinho = () => {
     }
 };
 
+player1.character = baianinho();
+player2.character = baianinho();
+
 function createPlayerDisplay(scene) {
     playerText = scene.add.text(560, -120, `Jogador ${currentPlayer}`, {
         fontSize: "24px",
