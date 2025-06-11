@@ -1,6 +1,6 @@
 function preload() {
     this.load.audio('menuMusic', 'assets/audio/menuMusic.mp3')
-    this.load.audio('clickSfx', 'assets/audio/click.wav')
+    this.load.audio('clickSfx', 'assets/soundEffects/click.wav')
 
     this.load.image('logo', 'assets/images/gameLogo.png')
     this.load.image('playBtn', 'assets/images/playButton.png')

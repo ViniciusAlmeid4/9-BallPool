@@ -38,14 +38,16 @@ function preload() {
     this.load.image("shadowBall", "assets/arts/shadowBall.png");
 
     // Efetos sonoros;
-    this.load.audio("shot", "assets/shot.mp3");
-    this.load.audio("ballHit", "assets/ballHit.mp3");
-    this.load.audio("pocketSound", "assets/pocket.mp3");
+    this.load.audio("shot", "assets/soundEffects/shot.mp3");
+    this.load.audio("ballHit", "assets/soundEffects/ballHit.mp3");
+    this.load.audio("pocketSound", "assets/soundEffects/pocket.mp3");
 
     // Musicas Jukebox;
-    this.load.audio("jukebox1", "assets/jukebox1.mp3");
-    this.load.audio("jukebox2", "assets/jukebox2.mp3");
-    this.load.audio("jukebox3", "assets/jukebox3.mp3");
+    this.load.audio("jukebox1", "assets/audio/jukebox1.mp3");
+    this.load.audio("jukebox2", "assets/audio/jukebox2.mp3");
+    this.load.audio("jukebox3", "assets/audio/jukebox3.mp3");
+    this.load.audio("jukebox3", "assets/audio/jukebox4.mp3");
+    this.load.audio("jukebox3", "assets/audio/jukebox5.mp3");
 
     this.load.on("loaderror", (file) => {
         console.error(`Erro ao carregar: ${file.key}, URL: ${file.src}`);
@@ -68,7 +70,7 @@ function create() {
     this.matter.world.setBounds(0, 0, 1360, 768, 100, true, true, true, true);
 
     // Jukebox
-    const playlist = ["jukebox1", "jukebox2", "jukebox3"];
+    const playlist = ["jukebox1", "jukebox2", "jukebox3", "jukebox4", "jukebox5"];
     Phaser.Utils.Array.Shuffle(playlist); // embaralha a ordem
 
     let currentTrack = 0;
