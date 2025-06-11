@@ -25,16 +25,16 @@ let lastPocketedBallColor = null;
 const ball1InitialPosition = { x: 300, y: 360 };
 
 function preload() {
-    this.load.image("table", "assets/table.png");
-    this.load.image("ballRed", "assets/ballRed.png");
-    this.load.image("ballBlue", "assets/ballBlue.png");
-    this.load.image("ballYellow", "assets/ballYellow.png");
-    this.load.image("ballWhite", "assets/ballWhite.png");
-    this.load.image("pocket", "assets/pocket.png");
-    this.load.image("stick", "assets/stick.png");
-    this.load.image("powerBar", "assets/powerBar.png");
-    this.load.image("powerSlider", "assets/powerSlider.png");
-    this.load.image("shadowBall", "assets/shadowBall.png");
+    this.load.image("table", "assets/arts/table.png");
+    this.load.image("ballRed", "assets/arts/ballRed.png");
+    this.load.image("ballBlue", "assets/arts/ballBlue.png");
+    this.load.image("ballYellow", "assets/arts/ballYellow.png");
+    this.load.image("ballWhite", "assets/arts/ballWhite.png");
+    this.load.image("pocket", "assets/arts/pocket.png");
+    this.load.image("stick", "assets/arts/stick.png");
+    this.load.image("powerBar", "assets/arts/powerBar.png");
+    this.load.image("powerSlider", "assets/arts/powerSlider.png");
+    this.load.image("shadowBall", "assets/arts/shadowBall.png");
 
     // Efetos sonoros;
     this.load.audio("shot", "assets/shot.mp3");

@@ -1,6 +1,6 @@
 function createPowerBar(scene) {
     const powerBar = scene.add.image(50, 360, "powerBar").setOrigin(0.5);
-    const powerSlider = scene.add.image(50, 210, "powerSlider").setOrigin(0.5);
+    const powerSlider = scene.add.image(50, 325, "powerSlider").setOrigin(0.5);
 
     powerBar.setVisible(false);
     powerSlider.setVisible(false);
