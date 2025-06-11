@@ -1,123 +1,119 @@
-function preload() {}
+function preload() {
+    this.load.audio('menuMusic', 'assets/audio/menuMusic.mp3')
+    this.load.audio('clickSfx', 'assets/audio/click.wav')
+
+    this.load.image('logo', 'assets/images/gameLogo.png')
+    this.load.image('playBtn', 'assets/images/playButton.png')
+    this.load.image('musicOn', 'assets/images/musicOn.png')
+    this.load.image('musicOff', 'assets/images/musicOff.png')
+    this.load.image('sfxOn', 'assets/images/sfxOn.png')
+    this.load.image('sfxOff', 'assets/images/sfxOff.png')
+}
+
+function updateMusicButtons_UI() {
+    if (!this.musicOnBtn || !this.musicOnBtn.active || !this.musicOffBtn || !this.musicOffBtn.active) return;
+
+    const isMuted = SoundManager.isMusicMuted();
+    this.musicOnBtn.setVisible(!isMuted);
+    this.musicOffBtn.setVisible(isMuted);
+}
+
+function updateSfxButtons_UI() {
+    if (!this.sfxOnBtn || !this.sfxOnBtn.active || !this.sfxOffBtn || !this.sfxOffBtn.active) return;
+
+    const isMuted = SoundManager.isSfxMuted();
+    this.sfxOnBtn.setVisible(!isMuted);    
+    this.sfxOffBtn.setVisible(isMuted);
+
+}
 
 function create() {
     const screenCenterX = this.cameras.main.width / 2;
     const screenCenterY = this.cameras.main.height / 2;
 
-    this.add.text(screenCenterX, screenCenterY - 100, '9BallPool', {
-        fontSize: '48px',
-        fill: '#fff',
-        fontFamily: 'Arial',
-    }).setOrigin(0.5);
+    SoundManager.playMusic('menuMusic', {
+        loop: true,
+        volume: 0.5,
+    });
 
-    const baseButtonStyle = {
-        fontSize: '32px',
-        fontFamily: 'Arial',
-        backgroundColor: '#333',
-        padding: { x: 20, y: 10 },
-    }
+    this.add.image(screenCenterX, screenCenterY - 50, 'logo')
+        .setScale(0.45)
 
-    const startButton = this.add.text(screenCenterX, screenCenterY, 'Play Game', {
-        ...baseButtonStyle,
-        fill: '#0f0',
-    })
-    .setOrigin(0.5)
-    .setInteractive({ useHandCursor: true });
+    const playButtonScale = 0.25;
+    const hoverPlayButtonScale = playButtonScale * 1.1;
 
-    startButton.on('pointerover', () => {
-        startButton.setStyle({ 
-            ...baseButtonStyle,
-            fill: '#8f8'
-        });
+    const playButton = this.add.image(screenCenterX, screenCenterY + 125, 'playBtn')
+        .setOrigin(0.5)
+        .setScale(playButtonScale)
+        .setInteractive({ useHandCursor: true });
+
+    playButton.on('pointerover', () => {
+        playButton.setScale(hoverPlayButtonScale);
     })
 
-    startButton.on('pointerout', () => {
-        startButton.setStyle({ 
-            ...baseButtonStyle,
-            fill: '#0f0'
-        });
+    playButton.on('pointerout', () => {
+        playButton.setScale(playButtonScale);
     })
 
-    startButton.on('pointerdown', () => {
+    playButton.on('pointerdown', () => {
+        SoundManager.playSfx('clickSfx');
+        SoundManager.stopMusic();
         this.scene.start('MainScene');
-    })
+    }) 
 
-    const optionsButton = this.add.text(screenCenterX, screenCenterY + 80, 'Options', {
-        ...baseButtonStyle,
-        fill: '#00f',
-    })
-    .setOrigin(0.5)
-    .setInteractive({ useHandCursor: true });
+    const soundButtonY = 40;
+    const musicCtrlButtonX = this.cameras.main.width - 150;
+    const sfxCtrlButtonX = this.cameras.main.width - 70;
+    const buttonScale = 1.0;
 
-    optionsButton.on('pointerover', () => {
-        optionsButton.setStyle({ 
-            ...baseButtonStyle,
-            fill: '#89f'
-        });
-    })
+    this.musicOnBtn = this.add.image(musicCtrlButtonX, soundButtonY, 'musicOn')
+        .setOrigin(0.5, 0.5).setScale(buttonScale)
+        .setInteractive({ useHandCursor: true });
 
-    optionsButton.on('pointerout', () => {
-        optionsButton.setStyle({ 
-            ...baseButtonStyle,
-            fill: '#00f'
-        });
-    })    
+    this.musicOnBtn.on('pointerdown', () => {
+        SoundManager.playSfx('clickSfx');
+        SoundManager.toggleMusicMute();
+        updateMusicButtons_UI.call(this);
+    });
 
-    const exitButton = this.add.text(screenCenterX, screenCenterY + 160, 'Exit', {
-        ...baseButtonStyle,
-        fill: '#f00',
-    })
-    .setOrigin(0.5)
-    .setInteractive({ useHandCursor: true });
+    this.musicOffBtn = this.add.image(musicCtrlButtonX, soundButtonY, 'musicOff')
+        .setOrigin(0.5, 0.5).setScale(buttonScale)
+        .setInteractive({ useHandCursor: true });
 
-    exitButton.on('pointerover', () => {
-        exitButton.setStyle({ 
-            ...baseButtonStyle,
-            fill: '#f88'
-        });
-    })
+    this.musicOffBtn.on('pointerdown', () => {
+        SoundManager.playSfx('clickSfx');
+        SoundManager.toggleMusicMute();
+        updateMusicButtons_UI.call(this);
+    });
 
-    exitButton.on('pointerout', () => {
-        exitButton.setStyle({ 
-            ...baseButtonStyle,
-            fill: '#f00'
-        });
-    })
+    this.sfxOnBtn = this.add.image(sfxCtrlButtonX, soundButtonY, 'sfxOn')
+        .setOrigin(0.5, 0.5).setScale(buttonScale)
+        .setInteractive({ useHandCursor: true });
 
-    exitButton.on('pointerdown', () => {
-        if (this.game) {
-            this.game.destroy(true, false);
-            
-            startButton.disableInteractive();
-            startButton.setAlpha(0.5);
-            
-            exitButton.disableInteractive();
-            exitButton.setAlpha(0.5);
-        }
+    this.sfxOnBtn.on('pointerdown', () => {
+        const sfxIsNowMuted = SoundManager.toggleSfxMute();
+        if (!sfxIsNowMuted) SoundManager.playSfx('clickSfx');
+        updateSfxButtons_UI.call(this);
+    });
 
-    })
+    this.sfxOffBtn = this.add.image(sfxCtrlButtonX, soundButtonY, 'sfxOff')
+        .setOrigin(0.5, 0.5).setScale(buttonScale)
+        .setInteractive({ useHandCursor: true });
 
-    // TODO: Implement sound and music system
-    const soundButton = this.add.text(screenCenterX + 500, screenCenterY - 250, 'Sound', {
-        ...baseButtonStyle,
-        fill: '#fff',
-    })
-    .setOrigin(0.5)
-    .setInteractive({ useHandCursor: true });
-
-    const musicButton = this.add.text(screenCenterX + 500, screenCenterY - 180, 'Music', {
-        ...baseButtonStyle,
-        fill: '#fff',
-    })
-    .setOrigin(0.5)
-    .setInteractive({ useHandCursor: true });
+    this.sfxOffBtn.on('pointerdown', () => {
+        const sfxIsNowMuted = SoundManager.toggleSfxMute();
+        if (!sfxIsNowMuted) SoundManager.playSfx('clickSfx');
+        updateSfxButtons_UI.call(this);
+    });
+        
+    updateMusicButtons_UI.call(this);
+    updateSfxButtons_UI.call(this);
 }
-
-function update() {}
 
 const menuScene = {
     key: 'MenuScene',
     preload,
     create,
-    update,
+    updateMusicButtons: updateMusicButtons_UI,
+    updateSfxButtons: updateSfxButtons_UI,
 };

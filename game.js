@@ -20,3 +20,5 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
+
+SoundManager.init(game);
