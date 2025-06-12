@@ -54,6 +54,43 @@ const baianinho = () => {
 player1.character = baianinho();
 player2.character = baianinho();
 
+const donaLurdes = () => {
+    return {
+        charName: "Dona Lurdes",
+        powerIsOn: false,
+        player: null,
+        powersLeft: 1,
+        usePower: function () {
+            if (!this.powersLeft) {
+                return {
+                    result: false,
+                    msg: "Não é possível utilizar mais essa habilidade.",
+                };
+            }
+            this.powersLeft--;
+            this.powerIsOn = true;
+            let msg;
+            if (!this.powersLeft) {
+                msg = "Última habilidade.";
+            } else {
+                msg = `Restam mais ${this.powersLeft}.`;
+            }
+            return {
+                result: true,
+                msg: msg,
+            };
+        },
+        playerSelect: function (player) {
+            this.player = player;
+            if (currentPlayer === 1) {
+                player1.character = baianinho();
+            } else {
+                player2.character = baianinho();
+            }
+        },
+    }
+};
+
 function createPlayerDisplay(scene) {
     playerText = scene.add.text(560, -120, `Jogador ${currentPlayer}`, {
         fontSize: "24px",
@@ -101,9 +138,11 @@ function getPlayerColor(player) {
 }
 
 function updatePlayerDisplay() {
+    let currentPlayerObject = currentPlayer == 1 ? player1 : player2;
     if (playerText) {
         let color = getPlayerColor(currentPlayer);
         let display = `Jogador ${currentPlayer}`;
+        display += ` ${currentPlayerObject.charName}`;
         if (color) {
             display += ` - ${color}`;
         }

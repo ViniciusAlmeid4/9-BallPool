@@ -16,6 +16,7 @@ let stickAnimationStart = 0;
 let stickInitialDistance = 20;
 let stickFinalDistance = 5;
 let queuedForce = { x: 0, y: 0 };
+let currentShotAngle = 0;
 
 let playerManager;
 let canSwitchPlayer = false; // Flag para controlar o momento da troca de jogador
@@ -159,12 +160,8 @@ function create() {
             const vy = ball.body.velocity.y;
             const speed = Math.hypot(vx, vy);
 
-            if (speed < 0.01) {
+            if (speed < 0.02) {
                 ball.setVelocity(0, 0);
-            } else if (speed < 0.5) {
-                ball.setVelocity(vx * 0.985, vy * 0.985);
-            } else {
-                ball.setVelocity(vx * 0.995, vy * 0.995);
             }
         });
     });
@@ -300,10 +297,10 @@ function update() {
         }
     }
 
-    balls.forEach((ball) => {
-        ball.setAngle(0);
-        ball.setAngularVelocity(0);
-    });
+    // balls.forEach((ball) => {
+    //     ball.setAngle(0);
+    //     ball.setAngularVelocity(0);
+    // });
 }
 
 function checkVictory(scene, pocketedBall) {
