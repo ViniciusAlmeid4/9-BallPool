@@ -101,13 +101,35 @@ function updateTrajectoryLine(scene, shotAngle) {
         scene.trajectoryLine.lineBetween(rayOrigin.x, rayOrigin.y, closestIntersection.x, closestIntersection.y);
         scene.shadowBall.setPosition(closestIntersection.x, closestIntersection.y).setVisible(true);
     } else {
+        const tableBounds = {
+            left: 154,
+            top: 187,
+            right: 1206,
+            bottom: 631
+        };
+
         const endX = rayOrigin.x + rayDir.x * 2000;
         const endY = rayOrigin.y + rayDir.y * 2000;
-        scene.trajectoryLine.lineBetween(rayOrigin.x, rayOrigin.y, endX, endY);
+
+        const finalEndPoint = clampLineToTableBounds(
+            rayOrigin.x,
+            rayOrigin.y,
+            endX,
+            endY,
+            tableBounds
+        );
+
+        scene.trajectoryLine.lineBetween(rayOrigin.x, rayOrigin.y, finalEndPoint.x, finalEndPoint.y);
+        scene.shadowBall.setPosition(finalEndPoint.x, finalEndPoint.y).setVisible(true);
+
     }
 
-    // Chama a função de desenho da previsão, passando a informação correta
-    drawTargetBallPrediction(scene, targetBallHit, closestIntersection);
+    let player = currentPlayer == 1 ? player1.character : player2.character;
+
+    if(player.charName == "Dona Lurdes") {
+        // Chama a função de desenho da previsão, passando a informação correta
+        drawTargetBallPrediction(scene, targetBallHit, closestIntersection);
+    }
 }
 
 function drawTargetBallPrediction(scene, targetBall, cueBallImpactPosition) {

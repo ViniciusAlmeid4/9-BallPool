@@ -71,7 +71,7 @@ function create() {
     this.matter.world.setBounds(0, 0, 1360, 768, 100, true, true, true, true);
 
     // Jukebox
-    const playlist = ["jukebox1", "jukebox2", "jukebox3", "jukebox4", "jukebox5"];
+    const playlist = ["jukebox1", "jukebox2", "jukebox3"];
     Phaser.Utils.Array.Shuffle(playlist); // embaralha a ordem
 
     let currentTrack = 0;

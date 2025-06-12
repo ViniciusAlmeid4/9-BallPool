@@ -17,7 +17,7 @@ const player2 = player();
 const baianinho = () => {
     return {
         charName: "Baianinho",
-        powerIsOn: false,
+        powerIsOn: true,
         player: null,
         powersLeft: 1,
         usePower: function () {
@@ -51,8 +51,6 @@ const baianinho = () => {
     }
 };
 
-player1.character = baianinho();
-player2.character = baianinho();
 
 const donaLurdes = () => {
     return {
@@ -90,6 +88,9 @@ const donaLurdes = () => {
         },
     }
 };
+
+player1.character = baianinho();
+player2.character = donaLurdes();
 
 function createPlayerDisplay(scene) {
     playerText = scene.add.text(560, -120, `Jogador ${currentPlayer}`, {
@@ -142,7 +143,7 @@ function updatePlayerDisplay() {
     if (playerText) {
         let color = getPlayerColor(currentPlayer);
         let display = `Jogador ${currentPlayer}`;
-        display += ` ${currentPlayerObject.charName}`;
+        display += ` ${currentPlayerObject.character.charName}`;
         if (color) {
             display += ` - ${color}`;
         }
