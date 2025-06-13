@@ -297,10 +297,10 @@ function update() {
         }
     }
 
-    // balls.forEach((ball) => {
-    //     ball.setAngle(0);
-    //     ball.setAngularVelocity(0);
-    // });
+    balls.forEach((ball) => {
+        ball.setAngle(0);
+        ball.setAngularVelocity(0);
+    });
 }
 
 function checkVictory(scene, pocketedBall) {
