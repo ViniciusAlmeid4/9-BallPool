@@ -1,7 +1,7 @@
 function createPowerBar(scene) {
     const powerBar = scene.add.image(50, 360, "powerBar").setOrigin(0.5);
     const powerSlider = scene.add.image(50, 325, "powerSlider").setOrigin(0.5);
-
+    
     powerBar.setVisible(false);
     powerSlider.setVisible(false);
     powerSlider.setInteractive();
@@ -11,17 +11,8 @@ function createPowerBar(scene) {
     scene.input.on("dragstart", (pointer, gameObject) => {
         // A funcionalidade de drag só inicia se o slider é o objeto, o stick está travado
         // E SE TODAS AS BOLAS ESTIVEREM PARADAS
-        let allStopped = true;
-        for (let i = 0; i < balls.length; i++) {
-            if (
-                balls[i].body.velocity.x !== 0 ||
-                balls[i].body.velocity.y !== 0
-            ) {
-                allStopped = false;
-                break;
-            }
-        }
-        if (gameObject === powerSlider && scene.stickLocked && allStopped) {
+        
+        if (gameObject === powerSlider && scene.stickLocked && allBallsStopped) {
             scene.isDragging = true;
         }
     });
@@ -29,7 +20,7 @@ function createPowerBar(scene) {
     scene.input.on("drag", (pointer, gameObject, dragX, dragY) => {
         // A funcionalidade de drag só ocorre se o slider é o objeto e o stick está travado
         if (gameObject === powerSlider && scene.stickLocked) {
-            const minY = powerBar.y - powerBar.height / 2;
+            const minY = 325
             const maxY = powerBar.y + powerBar.height / 2;
 
             gameObject.y = Phaser.Math.Clamp(dragY, minY, maxY);

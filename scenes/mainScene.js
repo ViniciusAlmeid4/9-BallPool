@@ -100,11 +100,25 @@ function create() {
     this.pocketSound = this.sound.add("pocketSound");
     playerManager = createPlayerDisplay(this);
 
+    balls = createBalls(this);
+    pockets = createPockets(this);
+    stick = createStick(this, 300, 700);
+
+    const { powerBar, powerSlider } = createPowerBar(this);
+    this.powerBar = powerBar;
+    this.powerSlider = powerSlider;
+
+    this.shadowBall = this.add.image(0, 0, "shadowBall");
+    this.shadowBall.setVisible(false);
+    this.shadowBall.setDisplaySize(40, 40);
+    this.shadowBall.setDepth(1);
+
     this.input.on("pointermove", (pointer) => {
         updateStickPosition(this, pointer);
     });
 
     this.input.on("pointerdown", (pointer) => {
+        this.powerSlider.y = 325
         if (allBallsStopped) {
             const tableArea = {
                 x: 100,
@@ -123,23 +137,6 @@ function create() {
             }
         }
     });
-
-    balls = createBalls(this);
-    pockets = createPockets(this);
-    stick = createStick(this, 300, 700);
-    const powerControls = createPowerBar(this);
-    this.powerBar = powerControls.powerBar;
-    this.powerSlider = powerControls.powerSlider;
-    this.shadowBall = this.add.image(0, 0, "shadowBall").setVisible(false);
-
-    const { powerBar, powerSlider } = createPowerBar(this);
-    this.powerBar = powerBar;
-    this.powerSlider = powerSlider;
-
-    this.shadowBall = this.add.image(0, 0, "shadowBall");
-    this.shadowBall.setVisible(false);
-    this.shadowBall.setDisplaySize(40, 40);
-    this.shadowBall.setDepth(1);
 
     this.matter.world.on("beforeupdate", () => {
         let stopped = true;
@@ -245,6 +242,7 @@ function create() {
 
     this.matter.world.on("afterupdate", () => {
         updateStickPosition(this, this.input.activePointer);
+        updatePlayerDisplay();
 
         if (shotTaken && shotStarted && allBallsStopped) {
             if (getBallPocketed()) {
@@ -256,7 +254,6 @@ function create() {
             }
             lastPocketedBallColor = null;
             resetBallPocketedFlag();
-            updatePlayerDisplay();
             shotTaken = false;
             shotStarted = false;
         }
