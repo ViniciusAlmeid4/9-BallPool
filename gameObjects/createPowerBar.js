@@ -21,7 +21,7 @@ function createPowerBar(scene) {
         // A funcionalidade de drag só ocorre se o slider é o objeto e o stick está travado
         if (gameObject === powerSlider && scene.stickLocked) {
             const minY = 325
-            const maxY = powerBar.y + powerBar.height / 2;
+            const maxY = powerBar.height + minY - 25;
 
             gameObject.y = Phaser.Math.Clamp(dragY, minY, maxY);
 
