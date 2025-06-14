@@ -180,27 +180,27 @@ function createBorders(mainScene) {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(150),
     });
-    drawRotatedRect(
-        graphics,
-        616,
-        673,
-        funnelLength,
-        funnelThickness,
-        Phaser.Math.DegToRad(150)
-    );
+    // drawRotatedRect(
+    //     graphics,
+    //     616,
+    //     673,
+    //     funnelLength,
+    //     funnelThickness,
+    //     Phaser.Math.DegToRad(150)
+    // );
 
     mainScene.matter.add.rectangle(744, 673, funnelLength, funnelThickness, {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(-150),
     });
-    drawRotatedRect(
-        graphics,
-        744,
-        673,
-        funnelLength,
-        funnelThickness,
-        Phaser.Math.DegToRad(-150)
-    );
+    // drawRotatedRect(
+    //     graphics,
+    //     744,
+    //     673,
+    //     funnelLength,
+    //     funnelThickness,
+    //     Phaser.Math.DegToRad(-150)
+    // );
 
     // === TOP-MIDDLE funnel
     mainScene.matter.add.rectangle(616, 145, funnelLength, funnelThickness, {

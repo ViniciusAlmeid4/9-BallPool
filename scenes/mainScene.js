@@ -37,6 +37,13 @@ function preload() {
     this.load.image("powerBar", "assets/arts/powerBar.png");
     this.load.image("powerSlider", "assets/arts/powerSlider.png");
     this.load.image("shadowBall", "assets/arts/shadowBall.png");
+    this.load.image("baianinho", "assets/arts/baianinho-portrait.png");
+    this.load.image("donaLurdes", "assets/arts/dona-lurdes-portrait.png");
+    this.load.image("zeMadruga", "assets/arts/ze-madruga-portrait.png");
+    this.load.image("huguinho", "assets/arts/huguinho-portrait.png");
+    this.load.image("blueFrame", "assets/arts/blueFrame.png");
+    this.load.image("redFrame", "assets/arts/redFrame.png");
+    this.load.image("defaultFrame", "assets/arts/defaultFrame.png");
 
     // Efeitos sonoros;
     this.load.audio("shot", "assets/soundEffects/shot.mp3");
@@ -112,6 +119,9 @@ function create() {
     this.shadowBall.setVisible(false);
     this.shadowBall.setDisplaySize(40, 40);
     this.shadowBall.setDepth(1);
+
+    this.add.image(100, 50, "defaultFrame")
+    this.add.image(0, 0, "baianinho")
 
     this.input.on("pointermove", (pointer) => {
         updateStickPosition(this, pointer);
