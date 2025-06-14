@@ -1,13 +1,12 @@
 function preload() {
-    this.load.audio('menuMusic', 'assets/audio/menuMusic.mp3')
-    this.load.audio('clickSfx', 'assets/soundEffects/click.wav')
+    SoundManager.preload(this);
 
-    this.load.image('logo', 'assets/images/gameLogo.png')
-    this.load.image('playBtn', 'assets/images/playButton.png')
-    this.load.image('musicOn', 'assets/images/musicOn.png')
-    this.load.image('musicOff', 'assets/images/musicOff.png')
-    this.load.image('sfxOn', 'assets/images/sfxOn.png')
-    this.load.image('sfxOff', 'assets/images/sfxOff.png')
+    this.load.image('logo', 'assets/images/gameLogo.png');
+    this.load.image('playBtn', 'assets/images/playButton.png');
+    this.load.image('musicOn', 'assets/images/musicOn.png');
+    this.load.image('musicOff', 'assets/images/musicOff.png');
+    this.load.image('sfxOn', 'assets/images/sfxOn.png');
+    this.load.image('sfxOff', 'assets/images/sfxOff.png');
 }
 
 function updateMusicButtons_UI() {
@@ -24,10 +23,11 @@ function updateSfxButtons_UI() {
     const isMuted = SoundManager.isSfxMuted();
     this.sfxOnBtn.setVisible(!isMuted);    
     this.sfxOffBtn.setVisible(isMuted);
-
 }
 
 function create() {
+    SoundManager.init(this.game);
+
     const screenCenterX = this.cameras.main.width / 2;
     const screenCenterY = this.cameras.main.height / 2;
 
@@ -37,7 +37,7 @@ function create() {
     });
 
     this.add.image(screenCenterX, screenCenterY - 50, 'logo')
-        .setScale(0.45)
+        .setScale(0.45);
 
     const playButtonScale = 0.25;
     const hoverPlayButtonScale = playButtonScale * 1.1;
@@ -49,17 +49,17 @@ function create() {
 
     playButton.on('pointerover', () => {
         playButton.setScale(hoverPlayButtonScale);
-    })
+    });
 
     playButton.on('pointerout', () => {
         playButton.setScale(playButtonScale);
-    })
+    });
 
     playButton.on('pointerdown', () => {
         SoundManager.playSfx('clickSfx');
         SoundManager.stopMusic();
         this.scene.start('MainScene');
-    }) 
+    });
 
     const soundButtonY = 40;
     const musicCtrlButtonX = this.cameras.main.width - 150;

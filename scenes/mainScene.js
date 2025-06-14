@@ -38,18 +38,6 @@ function preload() {
     this.load.image("powerSlider", "assets/arts/powerSlider.png");
     this.load.image("shadowBall", "assets/arts/shadowBall.png");
 
-    // Efeitos sonoros;
-    this.load.audio("shot", "assets/soundEffects/shot.mp3");
-    this.load.audio("ballHit", "assets/soundEffects/ballHit.mp3");
-    this.load.audio("pocketSound", "assets/soundEffects/pocket.mp3");
-
-    // Musicas Jukebox;
-    this.load.audio("jukebox1", "assets/audio/jukebox1.mp3");
-    this.load.audio("jukebox2", "assets/audio/jukebox2.mp3");
-    this.load.audio("jukebox3", "assets/audio/jukebox3.mp3");
-    this.load.audio("jukebox3", "assets/audio/jukebox4.mp3");
-    this.load.audio("jukebox3", "assets/audio/jukebox5.mp3");
-
     this.load.on("loaderror", (file) => {
         console.error(`Erro ao carregar: ${file.key}, URL: ${file.src}`);
     });
@@ -70,34 +58,12 @@ function create() {
 
     this.matter.world.setBounds(0, 0, 1360, 768, 100, true, true, true, true);
 
-    // Jukebox
-    const playlist = ["jukebox1", "jukebox2", "jukebox3"];
-    Phaser.Utils.Array.Shuffle(playlist); // embaralha a ordem
-
-    let currentTrack = 0;
-
-    const playNextTrack = () => {
-        const musicKey = playlist[currentTrack];
-        this.backgroundMusic = this.sound.add(musicKey, {
-            volume: 0.3,
-            loop: false,
-        });
-
-        this.backgroundMusic.play();
-
-        this.backgroundMusic.once("complete", () => {
-            currentTrack = (currentTrack + 1) % playlist.length;
-            playNextTrack();
-        });
-    };
-
-    playNextTrack();
+    SoundManager.runPlaylist();
 
     createBorders(this);
 
     this.add.image(680, 409, "table").setDepth(-1);
 
-    this.pocketSound = this.sound.add("pocketSound");
     playerManager = createPlayerDisplay(this);
 
     balls = createBalls(this);
@@ -173,12 +139,8 @@ function create() {
         }
 
         const removeBallFromWorld = (scene, ball) => {
-            if (scene.pocketSound) {
-                scene.pocketSound.play();
-            } else {
-                console.warn("⚠️ pocketSound não carregado");
-            }
-
+            SoundManager.playSfx("pocketSound");
+            
             if (ball.isWhite) {
                 this.isResetingCueBall = true;
                 updateStickPosition(this, this.input.activePointer);
@@ -196,8 +158,6 @@ function create() {
                     scene.matter.world.remove(ball.body);
                     ball.destroy();
 
-                    scene.pocketSound.play();
-
                     setBallPocketed(true);
 
                     if (ball.color) {
@@ -213,7 +173,7 @@ function create() {
             const { bodyA, bodyB } = pair;
 
             if (isBall(bodyA) && isBall(bodyB)) {
-                this.sound.play("ballHit", { volume: 0.6 });
+                SoundManager.playSfx("ballHit", { volume: 0.6 });
             }
 
             let ballBody;
@@ -281,7 +241,7 @@ function update() {
         if (t >= 1) {
             ball1.applyForce(queuedForce);
 
-            this.sound.play("shot");
+            SoundManager.playSfx("shot");
 
             isStickAnimating = false;
             this.stickLocked = false;
@@ -289,8 +249,8 @@ function update() {
             this.stickDistance = 20;
             this.powerSlider.y = this.powerBar.y - this.powerBar.height / 2;
 
-            shotTaken = true; // A shot was triggered
-            shotStarted = false; // … but we haven’t moved the ball yet
+            shotTaken = true;
+            shotStarted = false;
         }
     }
 
@@ -311,7 +271,6 @@ function checkVictory(scene, pocketedBall) {
 
     if (!colorAssigned) return; // ainda não temos cores atribuídas
 
-    // Contar quantas bolas da cor do jogador ainda estão na mesa
     const remainingBalls = balls.filter(
         (b) => b.color === (playerColor === "vermelho" ? "ballRed" : "ballBlue")
     );
@@ -337,15 +296,13 @@ function showVictoryText(scene, message) {
         .setOrigin(0.5)
         .setDepth(10);
 
-    scene.input.enabled = false; // Bloqueia entrada após vitória
+    scene.input.enabled = false;
 }
 
 function resetCueBall(scene) {
-    // Remove a bola branca atual da física e da cena
     scene.matter.world.remove(ball1.body);
     ball1.destroy();
 
-    // Recria a bola branca na posição inicial
     ball1 = scene.matter.add.image(
         ball1InitialPosition.x,
         ball1InitialPosition.y,
@@ -357,7 +314,6 @@ function resetCueBall(scene) {
     ball1.setBounce(0.9);
     ball1.isWhite = true;
 
-    // Atualiza o array balls: remove qualquer referência duplicada e adiciona no início
     balls = balls.filter((b) => !b.isWhite);
     balls.unshift(ball1);
 }
