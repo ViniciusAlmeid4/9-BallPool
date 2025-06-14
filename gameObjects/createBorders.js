@@ -176,56 +176,56 @@ function createBorders(mainScene) {
     // );
 
     // === BOTTOM-MIDDLE funnel
-    mainScene.matter.add.rectangle(620, 676, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(616, 673, funnelLength, funnelThickness, {
         ...funnelOptions,
-        angle: Phaser.Math.DegToRad(140),
+        angle: Phaser.Math.DegToRad(150),
     });
-    // drawRotatedRect(
-    //     graphics,
-    //     620,
-    //     676,
-    //     funnelLength,
-    //     funnelThickness,
-    //     Phaser.Math.DegToRad(140)
-    // );
+    drawRotatedRect(
+        graphics,
+        616,
+        673,
+        funnelLength,
+        funnelThickness,
+        Phaser.Math.DegToRad(150)
+    );
 
-    mainScene.matter.add.rectangle(741, 676, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(744, 673, funnelLength, funnelThickness, {
         ...funnelOptions,
-        angle: Phaser.Math.DegToRad(-140),
+        angle: Phaser.Math.DegToRad(-150),
     });
-    // drawRotatedRect(
-    //     graphics,
-    //     741,
-    //     676,
-    //     funnelLength,
-    //     funnelThickness,
-    //     Phaser.Math.DegToRad(-140)
-    // );
+    drawRotatedRect(
+        graphics,
+        744,
+        673,
+        funnelLength,
+        funnelThickness,
+        Phaser.Math.DegToRad(-150)
+    );
 
     // === TOP-MIDDLE funnel
-    mainScene.matter.add.rectangle(620, 142, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(616, 145, funnelLength, funnelThickness, {
         ...funnelOptions,
-        angle: Phaser.Math.DegToRad(40),
+        angle: Phaser.Math.DegToRad(30),
     });
     // drawRotatedRect(
     //     graphics,
-    //     620,
-    //     142,
+    //     616,
+    //     145,
     //     funnelLength,
     //     funnelThickness,
-    //     Phaser.Math.DegToRad(40)
+    //     Phaser.Math.DegToRad(30)
     // );
 
-    mainScene.matter.add.rectangle(741, 142, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(744, 145, funnelLength, funnelThickness, {
         ...funnelOptions,
-        angle: Phaser.Math.DegToRad(-40),
+        angle: Phaser.Math.DegToRad(-30),
     });
     // drawRotatedRect(
     //     graphics,
-    //     741,
-    //     142,
+    //     744,
+    //     145,
     //     funnelLength,
     //     funnelThickness,
-    //     Phaser.Math.DegToRad(-40)
+    //     Phaser.Math.DegToRad(-30)
     // );
 }

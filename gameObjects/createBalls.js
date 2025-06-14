@@ -6,7 +6,7 @@ function createBalls(scene) {
     ball1.setCircle(20);
     ball1.setBounce(0.8);
     ball1.setFriction(0.05);
-    ball1.setFrictionAir(0.01);
+    ball1.setFrictionAir(0.0085);
     ball1.isWhite = true;
     balls.push(ball1);
 
@@ -33,7 +33,7 @@ function createBalls(scene) {
     yellowBall.setCircle(20);
     yellowBall.setBounce(0.8);
     yellowBall.setFriction(0.05);
-    yellowBall.setFrictionAir(0.01);
+    yellowBall.setFrictionAir(0.0085);
     yellowBall.isYellow = true;
     balls.push(yellowBall);
 
@@ -63,7 +63,7 @@ function createBalls(scene) {
         ball.setCircle(20);
         ball.setBounce(0.8);
         ball.setFriction(0.05);
-        ball.setFrictionAir(0.01);
+        ball.setFrictionAir(0.0085);
         ball.color = color; // marca a cor para controle
         balls.push(ball);
     }

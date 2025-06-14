@@ -38,7 +38,7 @@ function preload() {
     this.load.image("powerSlider", "assets/arts/powerSlider.png");
     this.load.image("shadowBall", "assets/arts/shadowBall.png");
 
-    // Efetos sonoros;
+    // Efeitos sonoros;
     this.load.audio("shot", "assets/soundEffects/shot.mp3");
     this.load.audio("ballHit", "assets/soundEffects/ballHit.mp3");
     this.load.audio("pocketSound", "assets/soundEffects/pocket.mp3");
@@ -121,10 +121,10 @@ function create() {
         this.powerSlider.y = 325
         if (allBallsStopped) {
             const tableArea = {
-                x: 100,
+                x: 80,
                 y: 50,
-                width: 1180,
-                height: 620,
+                width: 1220,
+                height: 670,
             };
 
             if (
