@@ -61,6 +61,9 @@ function create() {
     this.shadowBall.setDisplaySize(40, 40);
     this.shadowBall.setDepth(1);
 
+    this.add.image(100, 50, "defaultFrame")
+    this.add.image(0, 0, "baianinho")
+
     this.input.on("pointermove", (pointer) => {
         updateStickPosition(this, pointer);
     });
