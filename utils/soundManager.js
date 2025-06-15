@@ -11,19 +11,6 @@ const SoundManager = {
     ],
     currentTrackIndex: 0,
 
-    preload: function(scene) {
-        scene.load.audio('menuMusic', 'assets/audio/menuMusic.mp3');
-        scene.load.audio('clickSfx', 'assets/soundEffects/click.wav');
-        scene.load.audio("shot", "assets/soundEffects/shot.mp3");
-        scene.load.audio("ballHit", "assets/soundEffects/ballHit.mp3");
-        scene.load.audio("pocketSound", "assets/soundEffects/pocket.mp3");
-        scene.load.audio("jukebox1", "assets/audio/jukebox1.mp3");
-        scene.load.audio("jukebox2", "assets/audio/jukebox2.mp3");
-        scene.load.audio("jukebox3", "assets/audio/jukebox3.mp3");
-        scene.load.audio("jukebox4", "assets/audio/jukebox4.mp3");
-        scene.load.audio("jukebox5", "assets/audio/jukebox5.mp3");
-    },
-
     init: function(phaserGameInstance) {
         if (!phaserGameInstance || !phaserGameInstance.registry) {
             console.error("SoundManager.init falhou: Instância de jogo ou registro inválido.");
