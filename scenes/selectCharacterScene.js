@@ -6,17 +6,17 @@ function preload() {
     this.load.image('frameYellow', 'assets/arts/border-selected-character-menu.png');
     this.load.image('startButtonImg', 'assets/arts/start-button.png');
 
-    this.load.image('portraitBaianinho', 'assets/arts/bahianinho-select-screen.png');
+    this.load.image('portraitBaianinho', 'assets/arts/baianinho-select-screen.png');
     this.load.image('nameBaianinho', 'assets/arts/baianinho-text.png');
     
-    this.load.image('portraitDonaLurdes', 'assets/arts/donaLurdes-select-screen.png');
-    this.load.image('nameDonaLurdes', 'assets/arts/donaLurdes-text.png');
+    this.load.image('portraitDonaLurdes', 'assets/arts/dona-lurdes-select-screen.png');
+    this.load.image('nameDonaLurdes', 'assets/arts/dona-lurdes-text.png');
 
-    // this.load.image('portraitZeMadruga', 'assets/arts/zeMadruga-select-screen.png');
-    // this.load.image('nameZeMadruga', 'assets/arts/zeMadruga-text.png');
+    // this.load.image('portraitZeMadruga', 'assets/arts/ze-madruga-select-screen.png');
+    // this.load.image('nameZeMadruga', 'assets/arts/ze-madruga-text.png');
 
     // this.load.image('portraitHuguinho', 'assets/arts/huguinho-select-screen.png');
-    // this.load.image('nameHuguinho', 'assets/arts/huguinhoPinduca-text.png');
+    // this.load.image('nameHuguinho', 'assets/arts/huguinho-text.png');
 
     this.load.audio('clickSfx', 'assets/soundEffects/click.wav');
 }
