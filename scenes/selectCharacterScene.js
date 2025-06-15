@@ -15,8 +15,8 @@ function preload() {
     // this.load.image('portraitZeMadruga', 'assets/arts/ze-madruga-select-screen.png');
     // this.load.image('nameZeMadruga', 'assets/arts/ze-madruga-text.png');
 
-    // this.load.image('portraitHuguinho', 'assets/arts/huguinho-select-screen.png');
-    // this.load.image('nameHuguinho', 'assets/arts/huguinho-text.png');
+    this.load.image('portraitHuguinho', 'assets/arts/huguinho-select-screen.png');
+    this.load.image('nameHuguinho', 'assets/arts/huguinho-text.png');
 
     this.load.audio('clickSfx', 'assets/soundEffects/click.wav');
 }
@@ -116,7 +116,7 @@ function create() {
         { id: 1, portraitKey: 'portraitBaianinho', nameImageKey: 'nameBaianinho', constructorFunc: baianinho },
         { id: 2, portraitKey: 'portraitDonaLurdes', nameImageKey: 'nameDonaLurdes', constructorFunc: donaLurdes },
         // { id: 3, portraitKey: 'portraitZeMadruga', nameImageKey: 'nameZeMadruga', constructorFunc: zeMadruga },
-        // { id: 4, portraitKey: 'portraitHuguinho', nameImageKey: 'nameHuguinho', constructorFunc: huginho },
+        { id: 4, portraitKey: 'portraitHuguinho', nameImageKey: 'nameHuguinho', constructorFunc: huguinho },
     ];
 
     const screenCenterX = sceneContext.cameras.main.width / 2;

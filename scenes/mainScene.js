@@ -75,12 +75,7 @@ function create() {
                 height: 645,
             };
 
-            if (
-                pointer.x >= tableArea.x &&
-                pointer.x <= tableArea.x + tableArea.width &&
-                pointer.y >= tableArea.y &&
-                pointer.y <= tableArea.y + tableArea.height
-            ) {
+            if (pointer.x >= tableArea.x && pointer.x <= tableArea.x + tableArea.width && pointer.y >= tableArea.y && pointer.y <= tableArea.y + tableArea.height) {
                 this.stickLocked = !this.stickLocked;
             }
         }
@@ -145,14 +140,8 @@ function create() {
                     const colorKey = ball.color; // like "ballRed", "ballBlue", "yellow"
 
                     // Remove from both players' remainingBalls (in case it's "yellow")
-                    player1.remainingBalls = removeBallColor(
-                        player1.remainingBalls,
-                        colorKey
-                    );
-                    player2.remainingBalls = removeBallColor(
-                        player2.remainingBalls,
-                        colorKey
-                    );
+                    player1.remainingBalls = removeBallColor(player1.remainingBalls, colorKey);
+                    player2.remainingBalls = removeBallColor(player2.remainingBalls, colorKey);
 
                     function removeBallColor(ballArray, color) {
                         const idx = ballArray.indexOf(color);
@@ -191,11 +180,7 @@ function create() {
             if (ballBody) {
                 const ballSprite = balls.find((b) => b.body === ballBody);
                 if (ballSprite) {
-                    if (
-                        !colorAssigned &&
-                        (ballSprite.texture.key === "ballRed" ||
-                            ballSprite.texture.key === "ballBlue")
-                    ) {
+                    if (!colorAssigned && (ballSprite.texture.key === "ballRed" || ballSprite.texture.key === "ballBlue")) {
                         assignPlayerColors(ballSprite.texture.key, this);
                     }
                     removeBallFromWorld(this, ballSprite);
@@ -211,17 +196,58 @@ function create() {
         if (shotTaken && shotStarted && allBallsStopped) {
             if (getBallPocketed()) {
                 if (!shouldKeepTurn(lastPocketedBallColor)) {
-                    switchPlayer();
+                    switchPlayer(this);
                 }
             } else {
-                switchPlayer();
+                switchPlayer(this);
             }
             lastPocketedBallColor = null;
             resetBallPocketedFlag();
             shotTaken = false;
             shotStarted = false;
+
+            if (!this.pocketBlocks || !Array.isArray(this.pocketBlocks)) {
+                console.warn("No pocket blocks to remove.");
+                return;
+            }
+
+            this.pocketBlocks.forEach((block, index) => {
+                if (block && block.body) {
+                    block.destroy(); // This should remove it from both the scene and physics world
+                } else {
+                    console.warn(`Pocket block ${index} is missing or already destroyed.`);
+                }
+            });
+
+            this.pocketBlocks = [];
         }
     });
+
+    // Button for Player 1
+    const button1 = this.add
+        .text(322, 10, "Usar poder", {
+            font: "20px Arial",
+            fill: "#ffffff",
+            backgroundColor: "#228B22",
+            padding: { x: 10, y: 5 },
+        })
+        .setInteractive()
+        .on("pointerdown", () => {
+            player1.character.usePower(this, pockets.pockets);
+        });
+
+    // Button for Player 2
+    const button2 = this.add
+        .text(920, 10, "Usar poder", {
+            font: "20px Arial",
+            fill: "#ffffff",
+            backgroundColor: "#8B0000",
+            padding: { x: 10, y: 5 },
+        })
+        .setInteractive()
+        .on("pointerdown", () => {
+            player2.character.usePower(this, pockets.pockets);
+        });
 }
 
 function update() {
@@ -234,11 +260,7 @@ function update() {
         const elapsed = now - stickAnimationStart;
         const t = Math.min(elapsed / stickAnimationDuration, 1);
 
-        this.stickDistance = Phaser.Math.Linear(
-            stickInitialDistance,
-            stickFinalDistance,
-            t
-        );
+        this.stickDistance = Phaser.Math.Linear(stickInitialDistance, stickFinalDistance, t);
 
         updateStickPosition(this, this.input.activePointer);
 
@@ -275,9 +297,7 @@ function checkVictory(scene, pocketedBall) {
 
     if (!colorAssigned) return; // ainda não temos cores atribuídas
 
-    const remainingBalls = balls.filter(
-        (b) => b.color === (playerColor === "vermelho" ? "ballRed" : "ballBlue")
-    );
+    const remainingBalls = balls.filter((b) => b.color === (playerColor === "vermelho" ? "ballRed" : "ballBlue"));
 
     if (pocketedBall.texture.key === "ballYellow") {
         if (remainingBalls.length === 0) {
@@ -307,11 +327,7 @@ function resetCueBall(scene) {
     scene.matter.world.remove(ball1.body);
     ball1.destroy();
 
-    ball1 = scene.matter.add.image(
-        ball1InitialPosition.x,
-        ball1InitialPosition.y,
-        "ballWhite"
-    );
+    ball1 = scene.matter.add.image(ball1InitialPosition.x, ball1InitialPosition.y, "ballWhite");
     ball1.setCircle(20);
     ball1.setBounce(0.8);
     ball1.setFriction(0);
