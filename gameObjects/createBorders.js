@@ -3,54 +3,54 @@ function createBorders(mainScene) {
     // graphics.fillStyle(0xffffff, 1); // White, fully opaque
 
     // // Top barrier (left segment)
-    mainScene.matter.add.rectangle(408, 149, 458, 40, {
+    mainScene.matter.add.rectangle(408, 164, 458, 40, {
         isStatic: true,
         restitution: 1,
         label: "barrier",
     });
-    // graphics.fillRect(408 - 458 / 2, 149 - 40 / 2, 458, 40);
+    // graphics.fillRect(408 - 458 / 2, 164 - 40 / 2, 458, 40);
 
     // Top barrier (right segment)
-    mainScene.matter.add.rectangle(952, 149, 458, 40, {
+    mainScene.matter.add.rectangle(952, 164, 458, 40, {
         isStatic: true,
         restitution: 1,
         label: "barrier",
     });
-    // graphics.fillRect(952 - 458 / 2, 149 - 40 / 2, 458, 40);
+    // graphics.fillRect(952 - 458 / 2, 164 - 40 / 2, 458, 40);
 
     // Bottom barrier (right segment)
-    mainScene.matter.add.rectangle(952, 669, 458, 40, {
+    mainScene.matter.add.rectangle(952, 684, 458, 40, {
         isStatic: true,
         restitution: 1,
         label: "barrier",
     });
-    // graphics.fillRect(952 - 458 / 2, 669 - 40 / 2, 458, 40);
+    // graphics.fillRect(952 - 458 / 2, 684 - 40 / 2, 458, 40);
 
     // Bottom barrier (left segment)
-    mainScene.matter.add.rectangle(408, 669, 458, 40, {
+    mainScene.matter.add.rectangle(408, 684, 458, 40, {
         isStatic: true,
         restitution: 1,
         label: "barrier",
     });
-    // graphics.fillRect(408 - 458 / 2, 669 - 40 / 2, 458, 40);
+    // graphics.fillRect(408 - 458 / 2, 684 - 40 / 2, 458, 40);
 
     // Left barrier
-    mainScene.matter.add.rectangle(116, 409, 40, 394, {
+    mainScene.matter.add.rectangle(116, 424, 40, 394, {
         isStatic: true,
         restitution: 1,
         label: "barrier",
     });
-    // graphics.fillRect(116 - 40 / 2, 409 - 394 / 2, 40, 394);
+    // graphics.fillRect(116 - 40 / 2, 424 - 394 / 2, 40, 394);
 
     // Right barrier
     mainScene.matter.add.rectangle(
         1244, // + 60
-        409, // + 93
+        424, // + 93
         40,
         394,
         { isStatic: true, restitution: 1, label: "barrier" }
     );
-    // graphics.fillRect(1244 - 40 / 2, 409 - 394 / 2, 40, 394);
+    // graphics.fillRect(1244 - 40 / 2, 424 - 394 / 2, 40, 394);
 
     /* ---------- CORNERS ---------- */
 
@@ -68,162 +68,162 @@ function createBorders(mainScene) {
     }
 
     // === TOP-LEFT corner funnel
-    mainScene.matter.add.rectangle(170, 138, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(170, 153, funnelLength, funnelThickness, {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(55),
     });
     // drawRotatedRect(
     //     graphics,
     //     170,
-    //     138,
+    //     153,
     //     funnelLength,
     //     funnelThickness,
     //     Phaser.Math.DegToRad(55)
     // );
 
-    mainScene.matter.add.rectangle(106, 205, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(106, 220, funnelLength, funnelThickness, {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(35),
     });
     // drawRotatedRect(
     //     graphics,
     //     106,
-    //     205,
+    //     220,
     //     funnelLength,
     //     funnelThickness,
     //     Phaser.Math.DegToRad(35)
     // );
 
     // === TOP-RIGHT corner funnel
-    mainScene.matter.add.rectangle(1190, 138, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(1190, 153, funnelLength, funnelThickness, {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(125),
     });
     // drawRotatedRect(
     //     graphics,
     //     1190,
-    //     138,
+    //     153,
     //     funnelLength,
     //     funnelThickness,
     //     Phaser.Math.DegToRad(125)
     // );
 
-    mainScene.matter.add.rectangle(1255, 204, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(1255, 220, funnelLength, funnelThickness, {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(145),
     });
     // drawRotatedRect(
     //     graphics,
     //     1255,
-    //     204,
+    //     220,
     //     funnelLength,
     //     funnelThickness,
     //     Phaser.Math.DegToRad(145)
     // );
 
     // === BOTTOM-LEFT corner funnel
-    mainScene.matter.add.rectangle(170, 680, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(170, 695, funnelLength, funnelThickness, {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(-55),
     });
     // drawRotatedRect(
     //     graphics,
     //     170,
-    //     680,
+    //     695,
     //     funnelLength,
     //     funnelThickness,
     //     Phaser.Math.DegToRad(-55)
     // );
 
-    mainScene.matter.add.rectangle(105, 615, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(105, 630, funnelLength, funnelThickness, {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(-35),
     });
     // drawRotatedRect(
     //     graphics,
     //     105,
-    //     615,
+    //     630,
     //     funnelLength,
     //     funnelThickness,
     //     Phaser.Math.DegToRad(-35)
     // );
 
     // === BOTTOM-RIGHT corner funnel
-    mainScene.matter.add.rectangle(1190, 680, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(1190, 695, funnelLength, funnelThickness, {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(-125),
     });
     // drawRotatedRect(
     //     graphics,
     //     1190,
-    //     680,
+    //     695,
     //     funnelLength,
     //     funnelThickness,
     //     Phaser.Math.DegToRad(-125)
     // );
 
-    mainScene.matter.add.rectangle(1255, 615, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(1255, 630, funnelLength, funnelThickness, {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(-145),
     });
     // drawRotatedRect(
     //     graphics,
     //     1255,
-    //     615,
+    //     630,
     //     funnelLength,
     //     funnelThickness,
     //     Phaser.Math.DegToRad(-145)
     // );
 
     // === BOTTOM-MIDDLE funnel
-    mainScene.matter.add.rectangle(616, 673, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(616, 688, funnelLength, funnelThickness, {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(150),
     });
-    drawRotatedRect(
-        graphics,
-        616,
-        673,
-        funnelLength,
-        funnelThickness,
-        Phaser.Math.DegToRad(150)
-    );
+    // drawRotatedRect(
+    //     graphics,
+    //     616,
+    //     688,
+    //     funnelLength,
+    //     funnelThickness,
+    //     Phaser.Math.DegToRad(150)
+    // );
 
-    mainScene.matter.add.rectangle(744, 673, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(744, 688, funnelLength, funnelThickness, {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(-150),
     });
-    drawRotatedRect(
-        graphics,
-        744,
-        673,
-        funnelLength,
-        funnelThickness,
-        Phaser.Math.DegToRad(-150)
-    );
+    // drawRotatedRect(
+    //     graphics,
+    //     744,
+    //     688,
+    //     funnelLength,
+    //     funnelThickness,
+    //     Phaser.Math.DegToRad(-150)
+    // );
 
     // === TOP-MIDDLE funnel
-    mainScene.matter.add.rectangle(616, 145, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(616, 160, funnelLength, funnelThickness, {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(30),
     });
     // drawRotatedRect(
     //     graphics,
     //     616,
-    //     145,
+    //     160,
     //     funnelLength,
     //     funnelThickness,
     //     Phaser.Math.DegToRad(30)
     // );
 
-    mainScene.matter.add.rectangle(744, 145, funnelLength, funnelThickness, {
+    mainScene.matter.add.rectangle(744, 160, funnelLength, funnelThickness, {
         ...funnelOptions,
         angle: Phaser.Math.DegToRad(-30),
     });
     // drawRotatedRect(
     //     graphics,
     //     744,
-    //     145,
+    //     160,
     //     funnelLength,
     //     funnelThickness,
     //     Phaser.Math.DegToRad(-30)

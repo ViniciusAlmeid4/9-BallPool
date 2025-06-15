@@ -13,7 +13,7 @@ const config = {
         default: "matter",
         matter: {
             debug: false,
-            gravity: { y: 0, x:0 },
+            gravity: { y: 0, x: 0 },
         },
     },
     scene: [preloaderScene, menuScene, mainScene],

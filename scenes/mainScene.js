@@ -1,5 +1,5 @@
 const mainScene = {
-    key: 'MainScene',
+    key: "MainScene",
     create,
     update,
 };
@@ -44,7 +44,7 @@ function create() {
 
     createBorders(this);
 
-    this.add.image(680, 409, "table").setDepth(-1);
+    this.add.image(680, 424, "table").setDepth(-1);
 
     playerManager = createPlayerDisplay(this);
 
@@ -66,13 +66,13 @@ function create() {
     });
 
     this.input.on("pointerdown", (pointer) => {
-        this.powerSlider.y = 325
+        this.powerSlider.y = 325;
         if (allBallsStopped) {
             const tableArea = {
                 x: 80,
-                y: 50,
+                y: 110,
                 width: 1220,
-                height: 670,
+                height: 645,
             };
 
             if (
@@ -122,7 +122,7 @@ function create() {
 
         const removeBallFromWorld = (scene, ball) => {
             SoundManager.playSfx("pocketSound");
-            
+
             if (ball.isWhite) {
                 this.isResetingCueBall = true;
                 updateStickPosition(this, this.input.activePointer);
@@ -141,6 +141,28 @@ function create() {
                     ball.destroy();
 
                     setBallPocketed(true);
+
+                    const colorKey = ball.color; // like "ballRed", "ballBlue", "yellow"
+
+                    // Remove from both players' remainingBalls (in case it's "yellow")
+                    player1.remainingBalls = removeBallColor(
+                        player1.remainingBalls,
+                        colorKey
+                    );
+                    player2.remainingBalls = removeBallColor(
+                        player2.remainingBalls,
+                        colorKey
+                    );
+
+                    function removeBallColor(ballArray, color) {
+                        const idx = ballArray.indexOf(color);
+                        if (idx > -1) {
+                            ballArray.splice(idx, 1);
+                        }
+                        return ballArray;
+                    }
+
+                    drawRemainingBallsUI(this);
 
                     if (ball.color) {
                         lastPocketedBallColor = ball.color;
@@ -174,7 +196,7 @@ function create() {
                         (ballSprite.texture.key === "ballRed" ||
                             ballSprite.texture.key === "ballBlue")
                     ) {
-                        assignPlayerColors(ballSprite.texture.key);
+                        assignPlayerColors(ballSprite.texture.key, this);
                     }
                     removeBallFromWorld(this, ballSprite);
                 }
@@ -291,9 +313,9 @@ function resetCueBall(scene) {
         "ballWhite"
     );
     ball1.setCircle(20);
+    ball1.setBounce(0.8);
     ball1.setFriction(0);
-    ball1.setFrictionAir(0.0025);
-    ball1.setBounce(0.9);
+    ball1.setFrictionAir(0.0085);
     ball1.isWhite = true;
 
     balls = balls.filter((b) => !b.isWhite);

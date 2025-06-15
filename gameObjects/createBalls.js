@@ -5,7 +5,7 @@ function createBalls(scene) {
     ball1 = scene.matter.add.image(300, 360, "ballWhite");
     ball1.setCircle(20);
     ball1.setBounce(0.8);
-    ball1.setFriction(0.05);
+    ball1.setFriction(0);
     ball1.setFrictionAir(0.0085);
     ball1.isWhite = true;
     balls.push(ball1);
@@ -32,7 +32,7 @@ function createBalls(scene) {
     );
     yellowBall.setCircle(20);
     yellowBall.setBounce(0.8);
-    yellowBall.setFriction(0.05);
+    yellowBall.setFriction(0);
     yellowBall.setFrictionAir(0.0085);
     yellowBall.isYellow = true;
     balls.push(yellowBall);
@@ -62,11 +62,62 @@ function createBalls(scene) {
         const ball = scene.matter.add.image(pos.x, pos.y, color);
         ball.setCircle(20);
         ball.setBounce(0.8);
-        ball.setFriction(0.05);
+        ball.setFriction(0);
         ball.setFrictionAir(0.0085);
         ball.color = color; // marca a cor para controle
         balls.push(ball);
     }
 
     return balls;
+}
+
+function drawRemainingBallsUI(scene) {
+    // First: clear any previous UI elements
+    if (scene.player1BallsUI)
+        scene.player1BallsUI.forEach((img) => img.destroy());
+    if (scene.player2BallsUI)
+        scene.player2BallsUI.forEach((img) => img.destroy());
+
+    scene.player1BallsUI = [];
+    scene.player2BallsUI = [];
+
+    const spacing = 32; // space between each ball UI
+    const startX1 = 184; // starting x for player 1 (left)
+    const startX2 = 1178; // starting x for player 2 (right)
+    const y = 75; // common y position
+
+    // Helper to get the image key from the string
+    const getUIImageKey = (color) => {
+        switch (color) {
+            case "ballRed":
+                return "ballRedUI";
+            case "ballBlue":
+                return "ballBlueUI";
+            case "ballYellow":
+                return "ballYellowUI";
+            default:
+                return "ballDefaultUI"; // fallback
+        }
+    };
+
+    // Draw for player 1
+    player1.remainingBalls.forEach((color, i) => {
+        const key = getUIImageKey(color);
+        const x = startX1 + i * spacing;
+        const img = scene.add.image(x, y, key).setScale(0.75).setDepth(10);
+        scene.player1BallsUI.push(img);
+    });
+
+    // Draw for player 2 (right to left)
+    let player2RemainingBallsCopy = player2.remainingBalls;
+    let reverseList =
+        player2RemainingBallsCopy[0] != "ballYellow"
+            ? player2RemainingBallsCopy.reverse()
+            : player2RemainingBallsCopy;
+    reverseList.forEach((color, i) => {
+        const key = getUIImageKey(color);
+        const x = startX2 - i * spacing; // go *left* instead of right
+        const img = scene.add.image(x, y, key).setScale(0.75).setDepth(10);
+        scene.player2BallsUI.push(img);
+    });
 }
