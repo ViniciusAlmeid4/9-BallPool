@@ -9,15 +9,15 @@ function updateStickPosition(scene, pointer) {
     stick.setVisible(false);
     scene.trajectoryLine.clear();
     scene.shadowBall.setVisible(false);
-    
+
     // Limpar linha de previsão da bola atingida sempre que a posição do stick muda
     if (scene.predictedTargetLine) {
         scene.predictedTargetLine.clear();
     }
-    
+
     ball1 = balls[0];
-    
-    if(scene.isResetingCueBall) {
+
+    if (scene.isResetingCueBall) {
         return;
     }
 
@@ -43,7 +43,7 @@ function updateStickPosition(scene, pointer) {
             // 2. Este é o ângulo real e puro da tacada. Armazene-o.
             currentShotAngle = Math.atan2(dy, dx);
         }
-        
+
         // Use SEMPRE o 'currentShotAngle' para tudo a partir de agora
 
         // 3. Posicionar o taco ATRÁS da bola, usando o ângulo da tacada
@@ -53,10 +53,10 @@ function updateStickPosition(scene, pointer) {
 
         // 4. Rotacionar o sprite do taco para alinhar visualmente
         // Você pode precisar ajustar "+ Math.PI / 2" dependendo da orientação da sua imagem
-        stick.rotation = currentShotAngle + Math.PI / 2; 
+        stick.rotation = currentShotAngle + Math.PI / 2;
 
         // 5. A linha de trajetória também usa o ângulo puro
-        updateTrajectoryLine(scene, currentShotAngle); 
+        updateTrajectoryLine(scene, currentShotAngle);
     }
 }
 
@@ -82,11 +82,21 @@ function updateTrajectoryLine(scene, shotAngle) {
     // Raycast para encontrar a bola alvo
     for (let i = 1; i < balls.length; i++) {
         const otherBall = balls[i];
-        const inflatedRadius = (ball1.width / 2) + (otherBall.width / 2);
-        const intersection = getRayCircleIntersection(rayOrigin, rayDir, { x: otherBall.x, y: otherBall.y }, inflatedRadius);
+        const inflatedRadius = ball1.width / 2 + otherBall.width / 2;
+        const intersection = getRayCircleIntersection(
+            rayOrigin,
+            rayDir,
+            { x: otherBall.x, y: otherBall.y },
+            inflatedRadius
+        );
 
         if (intersection) {
-            const distSq = Phaser.Math.Distance.Squared(rayOrigin.x, rayOrigin.y, intersection.x, intersection.y);
+            const distSq = Phaser.Math.Distance.Squared(
+                rayOrigin.x,
+                rayOrigin.y,
+                intersection.x,
+                intersection.y
+            );
             if (distSq < minDistSq) {
                 minDistSq = distSq;
                 closestIntersection = intersection; // Posição do centro da bola branca no impacto
@@ -98,14 +108,21 @@ function updateTrajectoryLine(scene, shotAngle) {
     // Desenha a linha da bola branca
     scene.trajectoryLine.lineStyle(2, 0xffffff, 0.7);
     if (closestIntersection) {
-        scene.trajectoryLine.lineBetween(rayOrigin.x, rayOrigin.y, closestIntersection.x, closestIntersection.y);
-        scene.shadowBall.setPosition(closestIntersection.x, closestIntersection.y).setVisible(true);
+        scene.trajectoryLine.lineBetween(
+            rayOrigin.x,
+            rayOrigin.y,
+            closestIntersection.x,
+            closestIntersection.y
+        );
+        scene.shadowBall
+            .setPosition(closestIntersection.x, closestIntersection.y)
+            .setVisible(true);
     } else {
         const tableBounds = {
             left: 154,
-            top: 187,
+            top: 202,
             right: 1206,
-            bottom: 631
+            bottom: 646,
         };
 
         const endX = rayOrigin.x + rayDir.x * 2000;
@@ -119,14 +136,20 @@ function updateTrajectoryLine(scene, shotAngle) {
             tableBounds
         );
 
-        scene.trajectoryLine.lineBetween(rayOrigin.x, rayOrigin.y, finalEndPoint.x, finalEndPoint.y);
-        scene.shadowBall.setPosition(finalEndPoint.x, finalEndPoint.y).setVisible(true);
-
+        scene.trajectoryLine.lineBetween(
+            rayOrigin.x,
+            rayOrigin.y,
+            finalEndPoint.x,
+            finalEndPoint.y
+        );
+        scene.shadowBall
+            .setPosition(finalEndPoint.x, finalEndPoint.y)
+            .setVisible(true);
     }
 
     let player = currentPlayer == 1 ? player1.character : player2.character;
 
-    if(player.charName == "Dona Lurdes") {
+    if (player.charName == "Dona Lurdes") {
         // Chama a função de desenho da previsão, passando a informação correta
         drawTargetBallPrediction(scene, targetBallHit, closestIntersection);
     }
@@ -148,9 +171,9 @@ function drawTargetBallPrediction(scene, targetBall, cueBallImpactPosition) {
     // para o centro da bola alvo.
     const impactDirection = {
         x: targetBall.x - cueBallImpactPosition.x,
-        y: targetBall.y - cueBallImpactPosition.y
+        y: targetBall.y - cueBallImpactPosition.y,
     };
-    
+
     // Normaliza o vetor para ter apenas a direção (comprimento 1)
     const length = Math.hypot(impactDirection.x, impactDirection.y);
     if (length > 0) {
@@ -159,7 +182,7 @@ function drawTargetBallPrediction(scene, targetBall, cueBallImpactPosition) {
     }
 
     // Define o comprimento da nossa linha de previsão
-    const predictionLength = 50; 
+    const predictionLength = 50;
 
     // O ponto inicial da linha é o centro da bola que será atingida
     const startX = targetBall.x;
@@ -176,8 +199,12 @@ function drawTargetBallPrediction(scene, targetBall, cueBallImpactPosition) {
 
 function clampLineToTableBounds(startX, startY, endX, endY, bounds) {
     // Se o ponto final já está dentro da mesa, retornar como está
-    if (endX >= bounds.left && endX <= bounds.right && 
-        endY >= bounds.top && endY <= bounds.bottom) {
+    if (
+        endX >= bounds.left &&
+        endX <= bounds.right &&
+        endY >= bounds.top &&
+        endY <= bounds.bottom
+    ) {
         return { x: endX, y: endY };
     }
 
@@ -201,7 +228,7 @@ function clampLineToTableBounds(startX, startY, endX, endY, bounds) {
 
     return {
         x: startX + dx * t,
-        y: startY + dy * t
+        y: startY + dy * t,
     };
 }
 
@@ -254,7 +281,7 @@ function shootCueBall(scene) {
 
     // Definimos um valor de força mínimo, apenas para garantir que não seja zero.
     // Este valor é muito pequeno e não afetará a força geral da tacada.
-    const minComponentForce = 0.000001; 
+    const minComponentForce = 0.000001;
 
     // Se o componente X for quase zero (mas não exatamente zero), damos a ele um valor mínimo.
     if (Math.abs(forceX) > 0 && Math.abs(forceX) < minComponentForce) {
@@ -266,7 +293,7 @@ function shootCueBall(scene) {
     if (Math.abs(forceY) > 0 && Math.abs(forceY) < minComponentForce) {
         forceY = minComponentForce * Math.sign(forceY);
     }
-    
+
     // Agora, a queuedForce terá componentes que o Matter.js não irá ignorar.
     queuedForce = {
         x: forceX,

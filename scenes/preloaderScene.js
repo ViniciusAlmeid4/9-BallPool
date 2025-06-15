@@ -69,6 +69,19 @@ function create() {
     this.load.image("powerBar", "assets/arts/powerBar.png");
     this.load.image("powerSlider", "assets/arts/powerSlider.png");
     this.load.image("shadowBall", "assets/arts/shadowBall.png");
+    this.load.image("baianinho", "assets/arts/baianinho-portrait.png");
+    this.load.image("baianinho-text", "assets/arts/baianinho-text.png");
+    this.load.image("donaLurdes", "assets/arts/dona-lurdes-portrait.png");
+    this.load.image("donaLurdes-text", "assets/arts/dona-lurdes-text.png");
+    this.load.image("zeMadruga", "assets/arts/ze-madruga-portrait.png");
+    this.load.image("zeMadruga-text", "assets/arts/ze-madruga-text.png");
+    this.load.image("huguinho", "assets/arts/huguinho-portrait.png");
+    this.load.image("huguinho-text", "assets/arts/huguinho-text.png");
+    this.load.image("blueFrame", "assets/arts/blueFrame.png");
+    this.load.image("redFrame", "assets/arts/redFrame.png");
+    this.load.image("defaultFrame", "assets/arts/defaultFrame.png");
+    this.load.image("player1", "assets/arts/player1.png");
+    this.load.image("player2", "assets/arts/player2.png");
 
     this.load.start();
 }
