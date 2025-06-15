@@ -13,10 +13,10 @@ const config = {
         default: "matter",
         matter: {
             debug: false,
-            gravity: { y: 0, x:0 },
+            gravity: { y: 0, x: 0 },
         },
     },
-    scene: [mainScene, menuScene],
+    scene: [preloaderScene, menuScene, mainScene],
 };
 
 const game = new Phaser.Game(config);
