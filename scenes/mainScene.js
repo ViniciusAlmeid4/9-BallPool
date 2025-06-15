@@ -1,5 +1,5 @@
 const mainScene = {
-    key: 'MainScene',
+    key: "MainScene",
     preload,
     create,
     update,
@@ -32,18 +32,28 @@ function preload() {
     this.load.image("ballBlue", "assets/arts/ballBlue.png");
     this.load.image("ballYellow", "assets/arts/ballYellow.png");
     this.load.image("ballWhite", "assets/arts/ballWhite.png");
+    this.load.image("ballBlueUI", "assets/arts/ballBlue-UI.png");
+    this.load.image("ballRedUI", "assets/arts/ballRed-UI.png");
+    this.load.image("ballYellowUI", "assets/arts/ballYellow-UI.png");
+    this.load.image("ballDefaultUI", "assets/arts/ballDefault-UI.png");
     this.load.image("pocket", "assets/arts/pocket.png");
     this.load.image("stick", "assets/arts/stick.png");
     this.load.image("powerBar", "assets/arts/powerBar.png");
     this.load.image("powerSlider", "assets/arts/powerSlider.png");
     this.load.image("shadowBall", "assets/arts/shadowBall.png");
     this.load.image("baianinho", "assets/arts/baianinho-portrait.png");
+    this.load.image("baianinho-text", "assets/arts/baianinho-text.png");
     this.load.image("donaLurdes", "assets/arts/dona-lurdes-portrait.png");
+    this.load.image("donaLurdes-text", "assets/arts/dona-lurdes-text.png");
     this.load.image("zeMadruga", "assets/arts/ze-madruga-portrait.png");
+    this.load.image("zeMadruga-text", "assets/arts/ze-madruga-text.png");
     this.load.image("huguinho", "assets/arts/huguinho-portrait.png");
+    this.load.image("huguinho-text", "assets/arts/huguinho-text.png");
     this.load.image("blueFrame", "assets/arts/blueFrame.png");
     this.load.image("redFrame", "assets/arts/redFrame.png");
     this.load.image("defaultFrame", "assets/arts/defaultFrame.png");
+    this.load.image("player1", "assets/arts/player1.png");
+    this.load.image("player2", "assets/arts/player2.png");
 
     // Efeitos sonoros;
     this.load.audio("shot", "assets/soundEffects/shot.mp3");
@@ -102,7 +112,7 @@ function create() {
 
     createBorders(this);
 
-    this.add.image(680, 409, "table").setDepth(-1);
+    this.add.image(680, 424, "table").setDepth(-1);
 
     this.pocketSound = this.sound.add("pocketSound");
     playerManager = createPlayerDisplay(this);
@@ -120,21 +130,18 @@ function create() {
     this.shadowBall.setDisplaySize(40, 40);
     this.shadowBall.setDepth(1);
 
-    this.add.image(100, 50, "defaultFrame")
-    this.add.image(0, 0, "baianinho")
-
     this.input.on("pointermove", (pointer) => {
         updateStickPosition(this, pointer);
     });
 
     this.input.on("pointerdown", (pointer) => {
-        this.powerSlider.y = 325
+        this.powerSlider.y = 325;
         if (allBallsStopped) {
             const tableArea = {
                 x: 80,
-                y: 50,
+                y: 110,
                 width: 1220,
-                height: 670,
+                height: 645,
             };
 
             if (
@@ -210,6 +217,28 @@ function create() {
 
                     setBallPocketed(true);
 
+                    const colorKey = ball.color; // like "ballRed", "ballBlue", "yellow"
+
+                    // Remove from both players' remainingBalls (in case it's "yellow")
+                    player1.remainingBalls = removeBallColor(
+                        player1.remainingBalls,
+                        colorKey
+                    );
+                    player2.remainingBalls = removeBallColor(
+                        player2.remainingBalls,
+                        colorKey
+                    );
+
+                    function removeBallColor(ballArray, color) {
+                        const idx = ballArray.indexOf(color);
+                        if (idx > -1) {
+                            ballArray.splice(idx, 1);
+                        }
+                        return ballArray;
+                    }
+
+                    drawRemainingBallsUI(this);
+
                     if (ball.color) {
                         lastPocketedBallColor = ball.color;
                     }
@@ -242,7 +271,7 @@ function create() {
                         (ballSprite.texture.key === "ballRed" ||
                             ballSprite.texture.key === "ballBlue")
                     ) {
-                        assignPlayerColors(ballSprite.texture.key);
+                        assignPlayerColors(ballSprite.texture.key, this);
                     }
                     removeBallFromWorld(this, ballSprite);
                 }
@@ -362,9 +391,9 @@ function resetCueBall(scene) {
         "ballWhite"
     );
     ball1.setCircle(20);
+    ball1.setBounce(0.8);
     ball1.setFriction(0);
-    ball1.setFrictionAir(0.0025);
-    ball1.setBounce(0.9);
+    ball1.setFrictionAir(0.0085);
     ball1.isWhite = true;
 
     // Atualiza o array balls: remove qualquer referência duplicada e adiciona no início

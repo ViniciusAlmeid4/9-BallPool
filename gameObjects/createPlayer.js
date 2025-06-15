@@ -4,12 +4,16 @@ let hasBallPocketed = false;
 
 let colorAssigned = false;
 
+let player1Frame;
+let player2Frame;
+
 const player = () => {
     return {
         color: null,
         character: null,
-    }
-}
+        remainingBalls: [],
+    };
+};
 
 const player1 = player();
 const player2 = player();
@@ -48,9 +52,8 @@ const baianinho = () => {
                 player2.character = baianinho();
             }
         },
-    }
+    };
 };
-
 
 const donaLurdes = () => {
     return {
@@ -86,25 +89,84 @@ const donaLurdes = () => {
                 player2.character = baianinho();
             }
         },
-    }
+    };
 };
 
 player1.character = baianinho();
 player2.character = donaLurdes();
 
 function createPlayerDisplay(scene) {
-    playerText = scene.add.text(560, -120, `Jogador ${currentPlayer}`, {
-        fontSize: "24px",
-        fill: "#fff",
-    });
-    return { playerText };
+    let playerImage = scene.add.image(680, 30, `player${currentPlayer}`);
+    let charName = (currentPlayer === 1 ? player1 : player2).character.charName;
+    let charTextImage = scene.add.image(
+        680,
+        70,
+        `${getPortraitKey(charName)}-text`
+    );
+
+    playerImage.setOrigin(0.5);
+    charTextImage.setOrigin(0.5);
+
+    // Agrupar num container para facilitar atualizações
+    let playerDisplayContainer = scene.add.container(0, 0, [
+        playerImage,
+        charTextImage,
+    ]);
+    playerDisplayContainer.setDepth(10);
+
+    // Mostrar jogador 1
+    let player1Portrait = getPortraitKey(player1.character.charName);
+    const player1FrameColor = getFrameKey(player1.color);
+    player1Frame = scene.add.image(112, 54, player1FrameColor);
+    scene.add.image(112, 61, player1Portrait);
+    scene.add.image(240, 35, "player1");
+
+    // Mostrar jogador 2
+    let player2Portrait = getPortraitKey(player2.character.charName);
+    const player2FrameColor = getFrameKey(player2.color);
+    player2Frame = scene.add.image(1248, 54, player2FrameColor);
+    scene.add.image(1248, 61, player2Portrait);
+    scene.add.image(1120, 35, "player2");
+
+    player1.remainingBalls = ["ballYellow", "", "", "", ""];
+
+    player2.remainingBalls = ["ballYellow", "", "", "", ""];
+
+    drawRemainingBallsUI(scene);
+
+    return { playerDisplayContainer, playerImage, charTextImage };
+}
+
+function updatePlayerDisplay() {
+    let currentPlayerObject = currentPlayer == 1 ? player1 : player2;
+    let charName = currentPlayerObject.character.charName;
+
+    // Atualizar imagem do player (player1.png ou player2.png)
+    if (playerManager.playerImage) {
+        playerManager.playerImage.setTexture(`player${currentPlayer}`);
+    }
+
+    // Atualizar imagem com nome do personagem
+    if (playerManager.charTextImage) {
+        playerManager.charTextImage.setTexture(
+            `${getPortraitKey(charName)}-text`
+        );
+    }
 }
 
 function switchPlayer() {
-    if (currentPlayer === 1 && player1.character.charName == "Baianinho" && player1.character.powerIsOn) {
+    if (
+        currentPlayer === 1 &&
+        player1.character.charName == "Baianinho" &&
+        player1.character.powerIsOn
+    ) {
         player1.character.powerIsOn = false;
         return;
-    } else if (currentPlayer === 2 && player2.character.charName == "Baianinho" && player2.character.powerIsOn) {
+    } else if (
+        currentPlayer === 2 &&
+        player2.character.charName == "Baianinho" &&
+        player2.character.powerIsOn
+    ) {
         player2.character.powerIsOn = false;
         return;
     }
@@ -119,7 +181,7 @@ function getBallPocketed() {
     return hasBallPocketed;
 }
 
-function assignPlayerColors(ballColor) {
+function assignPlayerColors(ballColor, scene) {
     if (colorAssigned) return; // só define uma vez
 
     const color = ballColor === "ballRed" ? "vermelho" : "azul";
@@ -132,23 +194,37 @@ function assignPlayerColors(ballColor) {
     }
 
     colorAssigned = true;
+
+    player1Frame.setTexture(getFrameKey(player1.color));
+    player2Frame.setTexture(getFrameKey(player2.color));
+
+    // Helper to get how many red/blue balls there are
+    const getBallCountByColor = (colorKey) =>
+        balls.filter((b) => b.color === colorKey).length;
+
+    player1.remainingBalls = [
+        "ballYellow", // always shared
+        ...Array(
+            getBallCountByColor(
+                player1.color === "vermelho" ? "ballRed" : "ballBlue"
+            )
+        ).fill(player1.color === "vermelho" ? "ballRed" : "ballBlue"),
+    ];
+
+    player2.remainingBalls = [
+        "ballYellow", // always shared
+        ...Array(
+            getBallCountByColor(
+                player2.color === "vermelho" ? "ballRed" : "ballBlue"
+            )
+        ).fill(player2.color === "vermelho" ? "ballRed" : "ballBlue"),
+    ];
+
+    drawRemainingBallsUI(scene);
 }
 
 function getPlayerColor(player) {
     return player === 1 ? player1.color : player2.color;
-}
-
-function updatePlayerDisplay() {
-    let currentPlayerObject = currentPlayer == 1 ? player1 : player2;
-    if (playerText) {
-        let color = getPlayerColor(currentPlayer);
-        let display = `Jogador ${currentPlayer}`;
-        display += ` ${currentPlayerObject.character.charName}`;
-        if (color) {
-            display += ` - ${color}`;
-        }
-        playerText.setText(display);
-    }
 }
 
 function resetBallPocketedFlag() {
@@ -169,4 +245,30 @@ function shouldKeepTurn(ballColor) {
     }
 
     return false; // Qualquer outra cor não mantém (mas atualmente só red/blue são relevantes)
+}
+
+function getPortraitKey(charName) {
+    switch (charName) {
+        case "Baianinho":
+            return "baianinho";
+        case "Dona Lurdes":
+            return "donaLurdes";
+        case "Zé Madruga":
+            return "zeMadruga";
+        case "Huguinho":
+            return "huguinho";
+        default:
+            return "baianinho"; // padrão
+    }
+}
+
+function getFrameKey(color) {
+    switch (color) {
+        case "vermelho":
+            return "redFrame";
+        case "azul":
+            return "blueFrame";
+        default:
+            return "defaultFrame";
+    }
 }
