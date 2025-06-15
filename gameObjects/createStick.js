@@ -17,9 +17,9 @@ function updateStickPosition(scene, pointer) {
 
     ball1 = balls[0];
 
-    if (scene.isResetingCueBall) {
-        return;
-    }
+    if (scene.isResetingCueBall) return;
+
+    if (scene.isOnZeMadrugaPower) return;
 
     let allStopped = true;
     for (let i = 0; i < balls.length; i++) {

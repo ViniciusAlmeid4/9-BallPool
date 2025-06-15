@@ -92,6 +92,43 @@ const donaLurdes = () => {
     };
 };
 
+const zeMadruga = () => {
+    return {
+        charName: "Zé Madruga",
+        powerIsOn: true,
+        player: null,
+        powersLeft: 1,
+        usePower: function () {
+            if (!this.powersLeft) {
+                return {
+                    result: false,
+                    msg: "Não é possível utilizar mais essa habilidade.",
+                };
+            }
+            this.powersLeft--;
+            this.powerIsOn = true;
+            let msg;
+            if (!this.powersLeft) {
+                msg = "Última habilidade.";
+            } else {
+                msg = `Restam mais ${this.powersLeft}.`;
+            }
+            return {
+                result: true,
+                msg: msg,
+            };
+        },
+        playerSelect: function (player) {
+            this.player = player;
+            if (currentPlayer === 1) {
+                player1.character = baianinho();
+            } else {
+                player2.character = baianinho();
+            }
+        },
+    };
+};
+
 function createPlayerDisplay(scene) {
     let playerImage = scene.add.image(680, 30, `player${currentPlayer}`);
     let charName = (currentPlayer === 1 ? player1 : player2).character.charName;
