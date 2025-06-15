@@ -105,9 +105,15 @@ const huguinho = () => {
             scene.pocketBlocks = [];
 
             selectedPockets.forEach((pocket, index) => {
-                const block = scene.matter.add.image(pocket.x, pocket.y, null, null, {
-                    label: `pocketBlock${index}`,
-                });
+                const block = scene.matter.add.image(
+                    pocket.x,
+                    pocket.y,
+                    null,
+                    null,
+                    {
+                        label: `pocketBlock${index}`,
+                    }
+                );
 
                 block.setCircle(20);
                 block.setOrigin(0.5);
@@ -154,10 +160,10 @@ const huguinho = () => {
 const zeMadruga = () => {
     return {
         charName: "Zé Madruga",
-        powerIsOn: true,
+        powerIsOn: false,
         player: null,
         powersLeft: 1,
-        usePower: function () {
+        usePower: function (scene, pockets) {
             if (!this.powersLeft) {
                 return {
                     result: false,
@@ -166,43 +172,7 @@ const zeMadruga = () => {
             }
             this.powersLeft--;
             this.powerIsOn = true;
-            let msg;
-            if (!this.powersLeft) {
-                msg = "Última habilidade.";
-            } else {
-                msg = `Restam mais ${this.powersLeft}.`;
-            }
-            return {
-                result: true,
-                msg: msg,
-            };
-        },
-        playerSelect: function (player) {
-            this.player = player;
-            if (currentPlayer === 1) {
-                player1.character = baianinho();
-            } else {
-                player2.character = baianinho();
-            }
-        },
-    };
-};
-
-const zeMadruga = () => {
-    return {
-        charName: "Zé Madruga",
-        powerIsOn: true,
-        player: null,
-        powersLeft: 1,
-        usePower: function () {
-            if (!this.powersLeft) {
-                return {
-                    result: false,
-                    msg: "Não é possível utilizar mais essa habilidade.",
-                };
-            }
-            this.powersLeft--;
-            this.powerIsOn = true;
+            scene.isOnZeMadrugaPower = true;
             let msg;
             if (!this.powersLeft) {
                 msg = "Última habilidade.";
@@ -228,13 +198,20 @@ const zeMadruga = () => {
 function createPlayerDisplay(scene) {
     let playerImage = scene.add.image(680, 30, `player${currentPlayer}`);
     let charName = (currentPlayer === 1 ? player1 : player2).character.charName;
-    let charTextImage = scene.add.image(680, 70, `${getPortraitKey(charName)}-text`);
+    let charTextImage = scene.add.image(
+        680,
+        70,
+        `${getPortraitKey(charName)}-text`
+    );
 
     playerImage.setOrigin(0.5);
     charTextImage.setOrigin(0.5);
 
     // Agrupar num container para facilitar atualizações
-    let playerDisplayContainer = scene.add.container(0, 0, [playerImage, charTextImage]);
+    let playerDisplayContainer = scene.add.container(0, 0, [
+        playerImage,
+        charTextImage,
+    ]);
     playerDisplayContainer.setDepth(10);
 
     // Mostrar jogador 1
@@ -271,7 +248,9 @@ function updatePlayerDisplay() {
 
     // Atualizar imagem com nome do personagem
     if (playerManager.charTextImage) {
-        playerManager.charTextImage.setTexture(`${getPortraitKey(charName)}-text`);
+        playerManager.charTextImage.setTexture(
+            `${getPortraitKey(charName)}-text`
+        );
     }
 }
 
@@ -293,10 +272,18 @@ function switchPlayer(scene) {
     //     scene.pocketBlocks = [];
     // }
 
-    if (currentPlayer === 1 && player1.character.charName == "Baianinho" && player1.character.powerIsOn) {
+    if (
+        currentPlayer === 1 &&
+        player1.character.charName == "Baianinho" &&
+        player1.character.powerIsOn
+    ) {
         player1.character.powerIsOn = false;
         return;
-    } else if (currentPlayer === 2 && player2.character.charName == "Baianinho" && player2.character.powerIsOn) {
+    } else if (
+        currentPlayer === 2 &&
+        player2.character.charName == "Baianinho" &&
+        player2.character.powerIsOn
+    ) {
         player2.character.powerIsOn = false;
         return;
     }
@@ -332,16 +319,25 @@ function assignPlayerColors(ballColor, scene) {
     player2Frame.setTexture(getFrameKey(player2.color));
 
     // Helper to get how many red/blue balls there are
-    const getBallCountByColor = (colorKey) => balls.filter((b) => b.color === colorKey).length;
+    const getBallCountByColor = (colorKey) =>
+        balls.filter((b) => b.color === colorKey).length;
 
     player1.remainingBalls = [
         "ballYellow", // always shared
-        ...Array(getBallCountByColor(player1.color === "vermelho" ? "ballRed" : "ballBlue")).fill(player1.color === "vermelho" ? "ballRed" : "ballBlue"),
+        ...Array(
+            getBallCountByColor(
+                player1.color === "vermelho" ? "ballRed" : "ballBlue"
+            )
+        ).fill(player1.color === "vermelho" ? "ballRed" : "ballBlue"),
     ];
 
     player2.remainingBalls = [
         "ballYellow", // always shared
-        ...Array(getBallCountByColor(player2.color === "vermelho" ? "ballRed" : "ballBlue")).fill(player2.color === "vermelho" ? "ballRed" : "ballBlue"),
+        ...Array(
+            getBallCountByColor(
+                player2.color === "vermelho" ? "ballRed" : "ballBlue"
+            )
+        ).fill(player2.color === "vermelho" ? "ballRed" : "ballBlue"),
     ];
 
     drawRemainingBallsUI(scene);
