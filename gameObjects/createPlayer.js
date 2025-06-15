@@ -92,9 +92,6 @@ const donaLurdes = () => {
     };
 };
 
-player1.character = baianinho();
-player2.character = donaLurdes();
-
 function createPlayerDisplay(scene) {
     let playerImage = scene.add.image(680, 30, `player${currentPlayer}`);
     let charName = (currentPlayer === 1 ? player1 : player2).character.charName;
