@@ -32,6 +32,7 @@ function create() {
     this.isResetingCueBall = false;
     this.powerValue = 0;
     this.trajectoryLine = this.add.graphics();
+    this.isOnZeMadrugaPower = false;
 
     const Matter = Phaser.Physics.Matter.Matter;
     this.matter.world.engine.positionIterations = 10;
@@ -39,6 +40,8 @@ function create() {
     Matter.Resolver._restingThresh = 0.001;
 
     this.matter.world.setBounds(0, 0, 1360, 768, 100, true, true, true, true);
+
+    this.allowCueBallPlacement = false;
 
     SoundManager.runPlaylist();
 
@@ -61,11 +64,39 @@ function create() {
     this.shadowBall.setDisplaySize(40, 40);
     this.shadowBall.setDepth(1);
 
-    this.input.on("pointermove", (pointer) => {
-        updateStickPosition(this, pointer);
-    });
+    let isDraggingCueBall = false;
+    let cueBallGhost = null; // non-physics version
+    let ghostOffset = { x: 0, y: 0 }; // for dragging anchor correction
 
     this.input.on("pointerdown", (pointer) => {
+        if (this.isOnZeMadrugaPower) {
+            const distance = Phaser.Math.Distance.Between(
+                pointer.x,
+                pointer.y,
+                ball1.x,
+                ball1.y
+            );
+
+            if (distance < 30) {
+                isDraggingCueBall = true;
+
+                // Replace physics ball with ghost image
+                ghostOffset = {
+                    x: pointer.x - ball1.x,
+                    y: pointer.y - ball1.y,
+                };
+
+                cueBallGhost = this.add.image(ball1.x, ball1.y, "ballWhite");
+                cueBallGhost.setDepth(5);
+                cueBallGhost.setScale(ball1.scaleX);
+
+                // Hide the white cue ball
+                ball1.setVisible(false);
+            }
+
+            return;
+        }
+
         this.powerSlider.y = 325;
         if (allBallsStopped) {
             const tableArea = {
@@ -75,9 +106,55 @@ function create() {
                 height: 645,
             };
 
-            if (pointer.x >= tableArea.x && pointer.x <= tableArea.x + tableArea.width && pointer.y >= tableArea.y && pointer.y <= tableArea.y + tableArea.height) {
+            if (
+                pointer.x >= tableArea.x &&
+                pointer.x <= tableArea.x + tableArea.width &&
+                pointer.y >= tableArea.y &&
+                pointer.y <= tableArea.y + tableArea.height
+            ) {
                 this.stickLocked = !this.stickLocked;
             }
+        }
+    });
+
+    this.input.on("pointermove", (pointer) => {
+        let currentPlayerObject = currentPlayer == 1 ? player1 : player2;
+
+        if (
+            currentPlayerObject.character.charName == "Zé Madruga" &&
+            currentPlayerObject.character.powerIsOn
+        ) {
+            if (!isDraggingCueBall || !cueBallGhost) return;
+
+            const tableBounds = new Phaser.Geom.Rectangle(80, 110, 1220, 645);
+            if (tableBounds.contains(pointer.x, pointer.y)) {
+                cueBallGhost.setPosition(
+                    pointer.x - ghostOffset.x,
+                    pointer.y - ghostOffset.y
+                );
+            }
+        }
+
+        updateStickPosition(this, pointer);
+    });
+
+    this.input.on("pointerup", () => {
+        if (isDraggingCueBall && cueBallGhost) {
+            const currentPlayerObject = currentPlayer == 1 ? player1 : player2;
+
+            // Recreate new physics ball at ghost position
+            ball1.setPosition(cueBallGhost.x, cueBallGhost.y).setVisible(true);
+
+            // Clean up
+            cueBallGhost.destroy();
+            cueBallGhost = null;
+            isDraggingCueBall = false;
+            ghostOffset = { x: 0, y: 0 };
+
+            // Power used
+            currentPlayerObject.character.powerIsOn = false;
+            this.allowCueBallPlacement = false;
+            this.isOnZeMadrugaPower = false;
         }
     });
 
@@ -140,8 +217,14 @@ function create() {
                     const colorKey = ball.color; // like "ballRed", "ballBlue", "yellow"
 
                     // Remove from both players' remainingBalls (in case it's "yellow")
-                    player1.remainingBalls = removeBallColor(player1.remainingBalls, colorKey);
-                    player2.remainingBalls = removeBallColor(player2.remainingBalls, colorKey);
+                    player1.remainingBalls = removeBallColor(
+                        player1.remainingBalls,
+                        colorKey
+                    );
+                    player2.remainingBalls = removeBallColor(
+                        player2.remainingBalls,
+                        colorKey
+                    );
 
                     function removeBallColor(ballArray, color) {
                         const idx = ballArray.indexOf(color);
@@ -180,7 +263,11 @@ function create() {
             if (ballBody) {
                 const ballSprite = balls.find((b) => b.body === ballBody);
                 if (ballSprite) {
-                    if (!colorAssigned && (ballSprite.texture.key === "ballRed" || ballSprite.texture.key === "ballBlue")) {
+                    if (
+                        !colorAssigned &&
+                        (ballSprite.texture.key === "ballRed" ||
+                            ballSprite.texture.key === "ballBlue")
+                    ) {
                         assignPlayerColors(ballSprite.texture.key, this);
                     }
                     removeBallFromWorld(this, ballSprite);
@@ -215,7 +302,9 @@ function create() {
                 if (block && block.body) {
                     block.destroy(); // This should remove it from both the scene and physics world
                 } else {
-                    console.warn(`Pocket block ${index} is missing or already destroyed.`);
+                    console.warn(
+                        `Pocket block ${index} is missing or already destroyed.`
+                    );
                 }
             });
 
@@ -256,11 +345,22 @@ function update() {
     this.powerBar.setVisible(allBallsStopped && this.stickLocked);
     this.powerSlider.setVisible(allBallsStopped && this.stickLocked);
 
+    let currentPlayerObject = currentPlayer == 1 ? player1 : player2;
+    if (
+        currentPlayerObject.character.charName === "Zé Madruga" &&
+        currentPlayerObject.character.powerIsOn
+    )
+        this.isOnZeMadrugaPower = true;
+
     if (isStickAnimating) {
         const elapsed = now - stickAnimationStart;
         const t = Math.min(elapsed / stickAnimationDuration, 1);
 
-        this.stickDistance = Phaser.Math.Linear(stickInitialDistance, stickFinalDistance, t);
+        this.stickDistance = Phaser.Math.Linear(
+            stickInitialDistance,
+            stickFinalDistance,
+            t
+        );
 
         updateStickPosition(this, this.input.activePointer);
 
@@ -297,7 +397,9 @@ function checkVictory(scene, pocketedBall) {
 
     if (!colorAssigned) return; // ainda não temos cores atribuídas
 
-    const remainingBalls = balls.filter((b) => b.color === (playerColor === "vermelho" ? "ballRed" : "ballBlue"));
+    const remainingBalls = balls.filter(
+        (b) => b.color === (playerColor === "vermelho" ? "ballRed" : "ballBlue")
+    );
 
     if (pocketedBall.texture.key === "ballYellow") {
         if (remainingBalls.length === 0) {
@@ -327,7 +429,11 @@ function resetCueBall(scene) {
     scene.matter.world.remove(ball1.body);
     ball1.destroy();
 
-    ball1 = scene.matter.add.image(ball1InitialPosition.x, ball1InitialPosition.y, "ballWhite");
+    ball1 = scene.matter.add.image(
+        ball1InitialPosition.x,
+        ball1InitialPosition.y,
+        "ballWhite"
+    );
     ball1.setCircle(20);
     ball1.setBounce(0.8);
     ball1.setFriction(0);
