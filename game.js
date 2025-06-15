@@ -8,7 +8,7 @@ const config = {
         forceSetTimeOut: true, // Helps ensure consistent timing in some environments
     },
     // fixedStep: true, // Ensures consistent simulation
-    backgroundColor: "#1d1d1d",
+    backgroundColor: "#011b17",
     physics: {
         default: "matter",
         matter: {
@@ -16,7 +16,7 @@ const config = {
             gravity: { y: 0, x: 0 },
         },
     },
-    scene: [preloaderScene, menuScene, mainScene],
+    scene: [preloaderScene, menuScene, selectCharacterScene, mainScene],
 };
 
 const game = new Phaser.Game(config);

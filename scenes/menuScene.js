@@ -50,9 +50,8 @@ function create() {
 
     playButton.on('pointerdown', () => {
         SoundManager.playSfx('clickSfx');
-        SoundManager.stopMusic();
-        this.scene.start('MainScene');
-    });
+        this.scene.start('SelectCharacterScene');
+    }) 
 
     const soundButtonY = 40;
     const musicCtrlButtonX = screenWidth - 150;
