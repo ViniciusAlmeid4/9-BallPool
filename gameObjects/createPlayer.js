@@ -108,17 +108,19 @@ const huguinho = () => {
                 const block = scene.matter.add.image(
                     pocket.x,
                     pocket.y,
-                    null,
+                    'habilityBlock',
                     null,
                     {
                         label: `pocketBlock${index}`,
+                        isStatic: true,
+                        circleRadius: 20
                     }
                 );
 
-                block.setCircle(20);
+                // Ajustes para a imagem
                 block.setOrigin(0.5);
-                block.setDepth(0);
-                block.setStatic(true);
+                block.setScale(1.0);
+                block.setDepth(1);
 
                 scene.pocketBlocks.push(block);
             });

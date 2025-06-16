@@ -115,6 +115,7 @@ function create() {
     this.load.image('titleEndGame', 'assets/arts/end-game-text.png');
     this.load.image('statusVenceuImg', 'assets/arts/win-end-game.png');
     this.load.image('mainMenuBtnImg', 'assets/arts/menu-button.png');
+    this.load.image("habilityBlock", "assets/arts/block-hability.png");
 
     this.load.start();
 }

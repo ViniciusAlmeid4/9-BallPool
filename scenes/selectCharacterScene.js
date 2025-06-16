@@ -117,14 +117,14 @@ function create() {
             portraitKey: "portraitBaianinho",
             nameImageKey: "baianinho-text",
             constructorFunc: baianinho,
-            lore: "Baianinho é uma lenda da sinuca de bar. Com seu chapéu característico e calma inabalável, ele transforma cada jogada em uma obra de arte. Dizem que ele consegue prever a trajetória de cada bola apenas com o olhar."
+            lore: "Baianinho é uma lenda da sinuca mundial. Após anos de glória, seu desempenho caiu, e agora ele busca a redenção nos campeonatos locais de Maringá. Com seu chapéu característico e a habilidade única de jogar duas vezes seguidas, ele tenta recuperar o brilho de seus melhores dias"
         },
         {
             id: 2,
             portraitKey: "portraitDonaLurdes",
             nameImageKey: "donaLurdes-text",
             constructorFunc: donaLurdes,
-            lore: "Dona Lurdes pode parecer uma avó gentil, mas na mesa de sinuca, ela é uma competidora feroz. Cada tacada é calculada com a precisão de quem conhece todos os segredos do jogo, deixando adversários perplexos com sua habilidade."
+            lore: "Dona Lurdes pode parecer uma avó gentil, mas na mesa de sinuca, ela é uma competidora feroz. Sua mira afiada é lendária, mas com a visão já falhando, nem sempre a tacada vai onde ela espera, o que torna cada jogada um misto de técnica e surpresa."
         },
         {
             id: 3,
@@ -138,7 +138,7 @@ function create() {
             portraitKey: "portraitHuguinho",
             nameImageKey: "huguinho-text",
             constructorFunc: huguinho,
-            lore: "Jovem e cheio de energia, Huguinho é a nova promessa da sinuca. O que lhe falta em experiência, ele compensa com pura audácia e jogadas de alto risco que, quando funcionam, levantam a torcida e desmoralizam os oponentes."
+            lore: "Jovem e cheio de energia, Huguinho é um brilhante professor de front-end que vive uma vida dupla. À noite, nos campeonatos clandestinos de Maringá, ele joga sorrateiramente e bloqueia três caçapas aleatórias, desestabilizando o jogo e surpreendendo os adversários com sua ousadia."
         },
     ];
 
