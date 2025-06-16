@@ -1,14 +1,3 @@
-function preload() {
-    this.load.image('titleEndGame', 'assets/arts/end-game-text.png');
-    this.load.image('statusVenceuImg', 'assets/arts/win-end-game.png');
-
-    this.load.image('mainMenuBtnImg', 'assets/arts/menu-button.png');
-
-    this.load.audio('clickSfx', 'assets/soundEffects/click.wav');
-    this.load.audio('victoryMusic', 'assets/audio/victoryMusic.mp3');
-}
-
-
 function getCharacterAssetKeysForEndGame(charName) {
     let portraitKey = ''; 
     let nameImageKey = '';   
@@ -16,19 +5,19 @@ function getCharacterAssetKeysForEndGame(charName) {
     switch (charName.toLowerCase()) {
         case 'baianinho':
             portraitKey = 'portraitBaianinho';
-            nameImageKey = 'nameBaianinho';
+            nameImageKey = 'baianinho-text';
             break;
         case 'dona lurdes':
             portraitKey = 'portraitDonaLurdes';
-            nameImageKey = 'nameDonaLurdes';
+            nameImageKey = 'donaLurdes-text';
             break;
         case 'zé madruga':
             portraitKey = 'portraitZeMadruga';
-            nameImageKey = 'nameZeMadruga';
+            nameImageKey = 'zeMadruga-text';
             break;
         case 'huguinho':
             portraitKey = 'portraitHuguinho';
-            nameImageKey = 'nameHuguinho';
+            nameImageKey = 'huguinho-text';
             break;
     }
     return { portraitKey, nameImageKey };
@@ -122,6 +111,18 @@ function create(data) {
     mainMenuButton.on('pointerdown', () => {
         SoundManager.playSfx('clickSfx');
         SoundManager.stopMusic();
+        
+        
+        player1.color = null;
+        player1.character = null;
+        player1.remainingBalls = [];
+    
+        player2.color = null;
+        player2.character = null;
+        player2.remainingBalls = [];
+
+        colorAssigned = false;
+
         scene.scene.start('MenuScene');
     });
     mainMenuButton.on('pointerover', () => mainMenuButton.setScale(buttonScale * 1.05));
@@ -130,6 +131,5 @@ function create(data) {
 
 const endGameScene = {
     key: 'EndGameScene',
-    preload: preload,
     create: create
 };

@@ -1,44 +1,3 @@
-function preload() {
-    this.load.image("titleSelectChar", "assets/arts/escolha-personagem.png");
-    this.load.image("player1TextImg", "assets/arts/player1-select.png");
-    this.load.image("player2TextImg", "assets/arts/player2-select.png");
-    this.load.image("frameWhite", "assets/arts/border-character-menu.png");
-    this.load.image("loreButtonImg", "assets/arts/lore-button.png"); // Você precisará criar esta imagem
-    this.load.image(
-        "frameYellow",
-        "assets/arts/border-selected-character-menu.png"
-    );
-    this.load.image("startButtonImg", "assets/arts/start-button.png");
-
-    this.load.image(
-        "portraitBaianinho",
-        "assets/arts/baianinho-select-screen.png"
-    );
-    this.load.image("nameBaianinho", "assets/arts/baianinho-text.png");
-
-    this.load.image(
-        "portraitDonaLurdes",
-        "assets/arts/dona-lurdes-select-screen.png"
-    );
-    this.load.image("nameDonaLurdes", "assets/arts/dona-lurdes-text.png");
-
-    this.load.image("nameZeMadruga", "assets/arts/ze-madruga-text.png");
-
-    this.load.image(
-        "portraitZeMadruga",
-        "assets/arts/ze-madruga-select-screen.png"
-    );
-    this.load.image("nameZeMadruga", "assets/arts/ze-madruga-text.png");
-
-    this.load.image(
-        "portraitHuguinho",
-        "assets/arts/huguinho-select-screen.png"
-    );
-    this.load.image("nameHuguinho", "assets/arts/huguinho-text.png");
-
-    this.load.audio("clickSfx", "assets/soundEffects/click.wav");
-}
-
 function updateCharacterCardVisual(cardData) {
     if (!cardData || !cardData.uiElements) {
         console.warn(
@@ -67,13 +26,13 @@ function updateCharacterCardVisual(cardData) {
 
     if (playerTextImg) {
         if (isP1Selected && isP2Selected) {
-            playerTextImg.setTexture("player1TextImg");
+            playerTextImg.setTexture("player1-select");
             playerTextImg.setVisible(true);
         } else if (isP1Selected) {
-            playerTextImg.setTexture("player1TextImg");
+            playerTextImg.setTexture("player1-select");
             playerTextImg.setVisible(true);
         } else if (isP2Selected) {
-            playerTextImg.setTexture("player2TextImg");
+            playerTextImg.setTexture("player2-select");
             playerTextImg.setVisible(true);
         } else {
             playerTextImg.setVisible(false);
@@ -156,28 +115,28 @@ function create() {
         {
             id: 1,
             portraitKey: "portraitBaianinho",
-            nameImageKey: "nameBaianinho",
+            nameImageKey: "baianinho-text",
             constructorFunc: baianinho,
             lore: "Baianinho é uma lenda da sinuca de bar. Com seu chapéu característico e calma inabalável, ele transforma cada jogada em uma obra de arte. Dizem que ele consegue prever a trajetória de cada bola apenas com o olhar."
         },
         {
             id: 2,
             portraitKey: "portraitDonaLurdes",
-            nameImageKey: "nameDonaLurdes",
+            nameImageKey: "donaLurdes-text",
             constructorFunc: donaLurdes,
             lore: "Dona Lurdes pode parecer uma avó gentil, mas na mesa de sinuca, ela é uma competidora feroz. Cada tacada é calculada com a precisão de quem conhece todos os segredos do jogo, deixando adversários perplexos com sua habilidade."
         },
         {
             id: 3,
             portraitKey: "portraitZeMadruga",
-            nameImageKey: "nameZeMadruga",
+            nameImageKey: "zeMadruga-text",
             constructorFunc: zeMadruga,
             lore: "Com um passado misterioso e uma dívida eterna de aluguel, Zé Madruga joga sinuca para esquecer os problemas. Sua técnica pouco ortodoxa e suas jogadas 'sem querer querendo' o tornam um adversário imprevisível e perigoso."
         },
         {
             id: 4,
             portraitKey: "portraitHuguinho",
-            nameImageKey: "nameHuguinho",
+            nameImageKey: "huguinho-text",
             constructorFunc: huguinho,
             lore: "Jovem e cheio de energia, Huguinho é a nova promessa da sinuca. O que lhe falta em experiência, ele compensa com pura audácia e jogadas de alto risco que, quando funcionam, levantam a torcida e desmoralizam os oponentes."
         },
@@ -236,7 +195,7 @@ function create() {
             .image(
                 0,
                 -(frameWhiteImg.displayHeight * cardScale * 0.5) - 30,
-                "player1TextImg"
+                "player1-select"
             )
             .setOrigin(0.5, 1)
             .setScale(0.6)
@@ -249,7 +208,7 @@ function create() {
             .setOrigin(0.5, 0)
             .setScale(0.6);
 
-        const loreButtonYOffset = nameImage.y + nameImage.displayHeight + 20;
+        const loreButtonYOffset = frameWhiteImg.displayHeight * cardScale * 0.5 + 60;
         const loreButton = sceneContext.add.image(0, loreButtonYOffset, "loreButtonImg")
             .setOrigin(0.5, 0)
             .setScale(0.1)
@@ -356,7 +315,6 @@ function create() {
 
 const selectCharacterScene = {
     key: "SelectCharacterScene",
-    preload: preload,
     create: create,
     updateCharacterCardVisual: updateCharacterCardVisual,
     handleCardClick: handleCardClick,
