@@ -32,7 +32,7 @@ function preload() {
 
     this.load.image(
         "portraitHuguinho",
-        "assets/arts/huguinho-select-screen.png"
+        "assets/arts/huguinho-select-screen2.png"
     );
     this.load.image("nameHuguinho", "assets/arts/huguinho-text.png");
 
