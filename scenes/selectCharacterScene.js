@@ -131,7 +131,7 @@ function create() {
             portraitKey: "portraitZeMadruga",
             nameImageKey: "zeMadruga-text",
             constructorFunc: zeMadruga,
-            lore: "Com um passado misterioso e uma dívida eterna de aluguel, Zé Madruga joga sinuca para esquecer os problemas. Sua técnica pouco ortodoxa e suas jogadas 'sem querer querendo' o tornam um adversário imprevisível e perigoso."
+            lore: "Com um passado misterioso e uma dívida eterna de aluguel, Zé Madruga joga sinuca para esquecer os problemas. Sua técnica pouco ortodoxa, aliada à habilidade de posicionar o bolão onde quiser a qualquer momento, torna suas jogadas 'sem querer querendo' ainda mais imprevisíveis e perigosas."
         },
         {
             id: 4,

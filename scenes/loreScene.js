@@ -22,7 +22,7 @@ function createLoreScene() {
             align: 'center',
             wordWrap: { width: 800, useAdvancedWrap: true }
         };
-        this.add.text(screenCenterX, screenCenterY + 150, this.characterData.lore, loreTextStyle).setOrigin(0.5);
+        this.add.text(screenCenterX, screenCenterY + 90, this.characterData.lore, loreTextStyle).setOrigin(0.5);
 
         const backButton = this.add.image(screenCenterX, this.cameras.main.height - 80, 'backButton')
             .setScale(0.1)
