@@ -100,6 +100,8 @@ function create() {
     this.load.image("player1-select", "assets/arts/player1-select.png");
     this.load.image("player2", "assets/arts/player2.png");
     this.load.image("player2-select", "assets/arts/player2-select.png");
+    this.load.image("abilityUseBtn", "assets/arts/ability-use-button.png");
+    this.load.image("abilityUsedBtn", "assets/arts/ability-used-button.png");
 
     this.load.start();
 }

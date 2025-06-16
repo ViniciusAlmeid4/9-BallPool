@@ -65,8 +65,8 @@ function create() {
     this.shadowBall.setDepth(1);
 
     let isDraggingCueBall = false;
-    let cueBallGhost = null; // non-physics version
-    let ghostOffset = { x: 0, y: 0 }; // for dragging anchor correction
+    let cueBallGhost = null;
+    let ghostOffset = { x: 0, y: 0 };
 
     this.input.on("pointerdown", (pointer) => {
         if (this.isOnZeMadrugaPower) {
@@ -80,7 +80,6 @@ function create() {
             if (distance < 30) {
                 isDraggingCueBall = true;
 
-                // Replace physics ball with ghost image
                 ghostOffset = {
                     x: pointer.x - ball1.x,
                     y: pointer.y - ball1.y,
@@ -142,16 +141,13 @@ function create() {
         if (isDraggingCueBall && cueBallGhost) {
             const currentPlayerObject = currentPlayer == 1 ? player1 : player2;
 
-            // Recreate new physics ball at ghost position
             ball1.setPosition(cueBallGhost.x, cueBallGhost.y).setVisible(true);
 
-            // Clean up
             cueBallGhost.destroy();
             cueBallGhost = null;
             isDraggingCueBall = false;
             ghostOffset = { x: 0, y: 0 };
 
-            // Power used
             currentPlayerObject.character.powerIsOn = false;
             this.allowCueBallPlacement = false;
             this.isOnZeMadrugaPower = false;
@@ -214,9 +210,8 @@ function create() {
 
                     setBallPocketed(true);
 
-                    const colorKey = ball.color; // like "ballRed", "ballBlue", "yellow"
+                    const colorKey = ball.color;
 
-                    // Remove from both players' remainingBalls (in case it's "yellow")
                     player1.remainingBalls = removeBallColor(
                         player1.remainingBalls,
                         colorKey
@@ -300,7 +295,7 @@ function create() {
 
             this.pocketBlocks.forEach((block, index) => {
                 if (block && block.body) {
-                    block.destroy(); // This should remove it from both the scene and physics world
+                    block.destroy();
                 } else {
                     console.warn(
                         `Pocket block ${index} is missing or already destroyed.`
@@ -314,28 +309,28 @@ function create() {
 
     // Button for Player 1
     const button1 = this.add
-        .text(322, 10, "Usar poder", {
-            font: "20px Arial",
-            fill: "#ffffff",
-            backgroundColor: "#228B22",
-            padding: { x: 10, y: 5 },
-        })
+        .image(385, 35, "abilityUseBtn")
+        .setScale(0.7)
         .setInteractive()
         .on("pointerdown", () => {
-            player1.character.usePower(this, pockets.pockets);
+            if (button1.texture.key === "abilityUseBtn") {
+                player1.character.usePower(this, pockets.pockets);
+                button1.setTexture("abilityUsedBtn");
+                button1.disableInteractive();
+            }
         });
 
     // Button for Player 2
     const button2 = this.add
-        .text(920, 10, "Usar poder", {
-            font: "20px Arial",
-            fill: "#ffffff",
-            backgroundColor: "#8B0000",
-            padding: { x: 10, y: 5 },
-        })
+        .image(980, 35, "abilityUseBtn")
+        .setScale(0.7)
         .setInteractive()
         .on("pointerdown", () => {
-            player2.character.usePower(this, pockets.pockets);
+            if (button2.texture.key === "abilityUseBtn") {
+                player2.character.usePower(this, pockets.pockets);
+                button2.setTexture("abilityUsedBtn");
+                button2.disableInteractive();
+            }
         });
 }
 
