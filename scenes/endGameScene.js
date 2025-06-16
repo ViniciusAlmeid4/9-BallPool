@@ -122,6 +122,18 @@ function create(data) {
     mainMenuButton.on('pointerdown', () => {
         SoundManager.playSfx('clickSfx');
         SoundManager.stopMusic();
+        
+        
+        player1.color = null;
+        player1.character = null;
+        player1.remainingBalls = [];
+    
+        player2.color = null;
+        player2.character = null;
+        player2.remainingBalls = [];
+
+        colorAssigned = false;
+
         scene.scene.start('MenuScene');
     });
     mainMenuButton.on('pointerover', () => mainMenuButton.setScale(buttonScale * 1.05));

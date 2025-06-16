@@ -249,7 +249,7 @@ function create() {
             .setOrigin(0.5, 0)
             .setScale(0.6);
 
-        const loreButtonYOffset = nameImage.y + nameImage.displayHeight + 20;
+        const loreButtonYOffset = frameWhiteImg.displayHeight * cardScale * 0.5 + 60;
         const loreButton = sceneContext.add.image(0, loreButtonYOffset, "loreButtonImg")
             .setOrigin(0.5, 0)
             .setScale(0.1)
