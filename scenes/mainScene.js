@@ -387,42 +387,41 @@ function update() {
 }
 
 function checkVictory(scene, pocketedBall) {
-    const playerColor = getPlayerColor(currentPlayer);
     const opponent = currentPlayer === 1 ? 2 : 1;
-
-    if (pocketedBall.texture.key === "ballYellow" && !colorAssigned) {
-        showVictoryText(scene, `Jogador ${opponent} venceu!`);
-        return;
-    }
-
-    if (!colorAssigned) return; // ainda não temos cores atribuídas
-
-    const remainingBalls = balls.filter(
-        (b) => b.color === (playerColor === "vermelho" ? "ballRed" : "ballBlue")
-    );
+    let winner = null;
+    let loser = null;
 
     if (pocketedBall.texture.key === "ballYellow") {
-        if (remainingBalls.length === 0) {
-            showVictoryText(scene, `Jogador ${currentPlayer} venceu!`);
+        if (!colorAssigned) {
+            winner = opponent;
+            loser = currentPlayer;
         } else {
-            showVictoryText(scene, `Jogador ${opponent} venceu!`);
+            const playerColor = getPlayerColor(currentPlayer);
+            const remainingPlayerBalls = balls.filter(
+                (b) => b.active && b.texture.key !== "ballWhite" && b.texture.key !== "ballYellow" &&
+                       b.color === (playerColor === "vermelho" ? "ballRed" : "ballBlue")
+            ).length;
+
+            if (remainingPlayerBalls === 0) {
+                winner = currentPlayer;
+                loser = opponent;
+            } else {
+                winner = opponent;
+                loser = currentPlayer;
+            }
         }
     }
-}
 
-function showVictoryText(scene, message) {
-    const victoryText = scene.add
-        .text(620, 316, message, {
-            fontSize: "48px",
-            fill: "#fff",
-            backgroundColor: "#000",
-            padding: { x: 20, y: 10 },
-            align: "center",
-        })
-        .setOrigin(0.5)
-        .setDepth(10);
-
-    scene.input.enabled = false;
+    if (winner !== null) {
+        scene.input.enabled = false;
+        scene.scene.start('EndGameScene', { 
+            winner: winner,
+            loser: loser,
+            player1Data: player1,
+            player2Data: player2
+        });
+        return;
+    }
 }
 
 function resetCueBall(scene) {

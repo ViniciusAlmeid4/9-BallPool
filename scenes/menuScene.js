@@ -15,8 +15,6 @@ function updateSfxButtons_UI() {
 }
 
 function create() {
-    SoundManager.init(this.game);
-
     const screenWidth = this.cameras.main.width;
     const screenHeight = this.cameras.main.height;
     const screenCenterX = screenWidth / 2;
