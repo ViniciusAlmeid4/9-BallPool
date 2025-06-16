@@ -1,5 +1,5 @@
 const mainScene = {
-    preload,
+    key: "MainScene",
     create,
     update,
 };
@@ -15,6 +15,7 @@ let stickAnimationStart = 0;
 let stickInitialDistance = 20;
 let stickFinalDistance = 5;
 let queuedForce = { x: 0, y: 0 };
+let currentShotAngle = 0;
 
 let playerManager;
 let canSwitchPlayer = false; // Flag para controlar o momento da troca de jogador
@@ -24,50 +25,84 @@ let allBallsStopped = true;
 let lastPocketedBallColor = null;
 const ball1InitialPosition = { x: 300, y: 360 };
 
-function preload() {
-    this.load.image("table", "assets/table.png");
-    this.load.image("ballRed", "assets/ballRed.png");
-    this.load.image("ballBlue", "assets/ballBlue.png");
-    this.load.image("ballYellow", "assets/ballYellow.png");
-    this.load.image("ballWhite", "assets/ballWhite.png");
-    this.load.image("pocket", "assets/pocket.png");
-    this.load.image("stick", "assets/stick.png");
-    this.load.image("powerBar", "assets/powerBar.png");
-    this.load.image("powerSlider", "assets/powerSlider.png");
-    this.load.image("shadowBall", "assets/shadowBall.png");
-}
-
 function create() {
     this.stickLocked = false;
     this.stickDistance = 20;
     this.isDragging = false;
+    this.isResetingCueBall = false;
     this.powerValue = 0;
     this.trajectoryLine = this.add.graphics();
+    this.isOnZeMadrugaPower = false;
 
     const Matter = Phaser.Physics.Matter.Matter;
     this.matter.world.engine.positionIterations = 10;
     this.matter.world.engine.velocityIterations = 10;
     Matter.Resolver._restingThresh = 0.001;
 
-    this.matter.world.setBounds(0, 0, 1240, 633, 100, true, true, true, true);
+    this.matter.world.setBounds(0, 0, 1360, 768, 100, true, true, true, true);
+
+    this.allowCueBallPlacement = false;
+
+    SoundManager.runPlaylist();
 
     createBorders(this);
 
-    this.add.image(620, 316.5, "table").setDepth(-1);
+    this.add.image(680, 424, "table").setDepth(-1);
 
     playerManager = createPlayerDisplay(this);
 
-    this.input.on("pointermove", (pointer) => {
-        updateStickPosition(this, pointer);
-    });
+    balls = createBalls(this);
+    pockets = createPockets(this);
+    stick = createStick(this, 300, 700);
+
+    const { powerBar, powerSlider } = createPowerBar(this);
+    this.powerBar = powerBar;
+    this.powerSlider = powerSlider;
+
+    this.shadowBall = this.add.image(0, 0, "shadowBall");
+    this.shadowBall.setVisible(false);
+    this.shadowBall.setDisplaySize(40, 40);
+    this.shadowBall.setDepth(1);
+
+    let isDraggingCueBall = false;
+    let cueBallGhost = null;
+    let ghostOffset = { x: 0, y: 0 };
 
     this.input.on("pointerdown", (pointer) => {
+        if (this.isOnZeMadrugaPower) {
+            const distance = Phaser.Math.Distance.Between(
+                pointer.x,
+                pointer.y,
+                ball1.x,
+                ball1.y
+            );
+
+            if (distance < 30) {
+                isDraggingCueBall = true;
+
+                ghostOffset = {
+                    x: pointer.x - ball1.x,
+                    y: pointer.y - ball1.y,
+                };
+
+                cueBallGhost = this.add.image(ball1.x, ball1.y, "ballWhite");
+                cueBallGhost.setDepth(5);
+                cueBallGhost.setScale(ball1.scaleX);
+
+                // Hide the white cue ball
+                ball1.setVisible(false);
+            }
+
+            return;
+        }
+
+        this.powerSlider.y = 325;
         if (allBallsStopped) {
             const tableArea = {
-                x: 100,
-                y: 50,
-                width: 1180,
-                height: 620,
+                x: 80,
+                y: 110,
+                width: 1220,
+                height: 645,
             };
 
             if (
@@ -81,22 +116,43 @@ function create() {
         }
     });
 
-    balls = createBalls(this);
-    pockets = createPockets(this);
-    stick = createStick(this, 300, 700);
-    const powerControls = createPowerBar(this);
-    this.powerBar = powerControls.powerBar;
-    this.powerSlider = powerControls.powerSlider;
-    this.shadowBall = this.add.image(0, 0, "shadowBall").setVisible(false);
+    this.input.on("pointermove", (pointer) => {
+        let currentPlayerObject = currentPlayer == 1 ? player1 : player2;
 
-    const { powerBar, powerSlider } = createPowerBar(this);
-    this.powerBar = powerBar;
-    this.powerSlider = powerSlider;
+        if (
+            currentPlayerObject.character.charName == "Zé Madruga" &&
+            currentPlayerObject.character.powerIsOn
+        ) {
+            if (!isDraggingCueBall || !cueBallGhost) return;
 
-    this.shadowBall = this.add.image(0, 0, "shadowBall");
-    this.shadowBall.setVisible(false);
-    this.shadowBall.setDisplaySize(40, 40);
-    this.shadowBall.setDepth(1);
+            const tableBounds = new Phaser.Geom.Rectangle(80, 110, 1220, 645);
+            if (tableBounds.contains(pointer.x, pointer.y)) {
+                cueBallGhost.setPosition(
+                    pointer.x - ghostOffset.x,
+                    pointer.y - ghostOffset.y
+                );
+            }
+        }
+
+        updateStickPosition(this, pointer);
+    });
+
+    this.input.on("pointerup", () => {
+        if (isDraggingCueBall && cueBallGhost) {
+            const currentPlayerObject = currentPlayer == 1 ? player1 : player2;
+
+            ball1.setPosition(cueBallGhost.x, cueBallGhost.y).setVisible(true);
+
+            cueBallGhost.destroy();
+            cueBallGhost = null;
+            isDraggingCueBall = false;
+            ghostOffset = { x: 0, y: 0 };
+
+            currentPlayerObject.character.powerIsOn = false;
+            this.allowCueBallPlacement = false;
+            this.isOnZeMadrugaPower = false;
+        }
+    });
 
     this.matter.world.on("beforeupdate", () => {
         let stopped = true;
@@ -117,12 +173,8 @@ function create() {
             const vy = ball.body.velocity.y;
             const speed = Math.hypot(vx, vy);
 
-            if (speed < 0.01) {
+            if (speed < 0.02) {
                 ball.setVelocity(0, 0);
-            } else if (speed < 0.5) {
-                ball.setVelocity(vx * 0.98, vy * 0.98);
-            } else {
-                ball.setVelocity(vx * 0.99, vy * 0.99);
             }
         });
     });
@@ -137,26 +189,64 @@ function create() {
         }
 
         const removeBallFromWorld = (scene, ball) => {
+            SoundManager.playSfx("pocketSound");
+
             if (ball.isWhite) {
-                resetCueBall(scene); // Reseta a bola branca
+                this.isResetingCueBall = true;
+                updateStickPosition(this, this.input.activePointer);
+                ball.setVisible(false);
+                setTimeout(() => {
+                    this.isResetingCueBall = false;
+                    updateStickPosition(this, this.input.activePointer);
+                    ball.setVisible(true);
+                    resetCueBall(scene);
+                }, 3000);
             } else {
                 const index = balls.indexOf(ball);
                 if (index !== -1) {
                     balls.splice(index, 1);
                     scene.matter.world.remove(ball.body);
                     ball.destroy();
+
                     setBallPocketed(true);
+
+                    const colorKey = ball.color;
+
+                    player1.remainingBalls = removeBallColor(
+                        player1.remainingBalls,
+                        colorKey
+                    );
+                    player2.remainingBalls = removeBallColor(
+                        player2.remainingBalls,
+                        colorKey
+                    );
+
+                    function removeBallColor(ballArray, color) {
+                        const idx = ballArray.indexOf(color);
+                        if (idx > -1) {
+                            ballArray.splice(idx, 1);
+                        }
+                        return ballArray;
+                    }
+
+                    drawRemainingBallsUI(this);
+
                     if (ball.color) {
                         lastPocketedBallColor = ball.color;
                     }
                 }
 
-                checkVictory(scene, ball); // Garante verificação de vitória após encaçapamento
+                checkVictory(scene, ball);
             }
         };
 
         event.pairs.forEach((pair) => {
             const { bodyA, bodyB } = pair;
+
+            if (isBall(bodyA) && isBall(bodyB)) {
+                SoundManager.playSfx("ballHit", { volume: 0.6 });
+            }
+
             let ballBody;
 
             if (isBall(bodyA) && isPocket(bodyB)) {
@@ -173,7 +263,7 @@ function create() {
                         (ballSprite.texture.key === "ballRed" ||
                             ballSprite.texture.key === "ballBlue")
                     ) {
-                        assignPlayerColors(ballSprite.texture.key);
+                        assignPlayerColors(ballSprite.texture.key, this);
                     }
                     removeBallFromWorld(this, ballSprite);
                 }
@@ -182,21 +272,66 @@ function create() {
     });
 
     this.matter.world.on("afterupdate", () => {
+        updateStickPosition(this, this.input.activePointer);
+        updatePlayerDisplay();
+
         if (shotTaken && shotStarted && allBallsStopped) {
             if (getBallPocketed()) {
                 if (!shouldKeepTurn(lastPocketedBallColor)) {
-                    switchPlayer();
+                    switchPlayer(this);
                 }
             } else {
-                switchPlayer();
+                switchPlayer(this);
             }
             lastPocketedBallColor = null;
             resetBallPocketedFlag();
-            updatePlayerDisplay();
             shotTaken = false;
             shotStarted = false;
+
+            if (!this.pocketBlocks || !Array.isArray(this.pocketBlocks)) {
+                console.warn("No pocket blocks to remove.");
+                return;
+            }
+
+            this.pocketBlocks.forEach((block, index) => {
+                if (block && block.body) {
+                    block.destroy();
+                } else {
+                    console.warn(
+                        `Pocket block ${index} is missing or already destroyed.`
+                    );
+                }
+            });
+
+            this.pocketBlocks = [];
         }
     });
+
+    // Button for Player 1
+    const button1 = this.add
+        .image(385, 35, "abilityUseBtn")
+        .setScale(0.7)
+        .setInteractive()
+        .on("pointerdown", () => {
+            if (button1.texture.key === "abilityUseBtn") {
+                player1.character.usePower(this, pockets.pockets);
+                button1.setTexture("abilityUsedBtn");
+                button1.disableInteractive();
+            }
+        });
+
+    // Button for Player 2
+    const button2 = this.add
+        .image(980, 35, "abilityUseBtn")
+        .setScale(0.7)
+        .setInteractive()
+        .on("pointerdown", () => {
+            if (button2.texture.key === "abilityUseBtn") {
+                player2.character.usePower(this, pockets.pockets);
+                button2.setTexture("abilityUsedBtn");
+                button2.disableInteractive();
+            }
+        });
 }
 
 function update() {
@@ -204,6 +339,13 @@ function update() {
 
     this.powerBar.setVisible(allBallsStopped && this.stickLocked);
     this.powerSlider.setVisible(allBallsStopped && this.stickLocked);
+
+    let currentPlayerObject = currentPlayer == 1 ? player1 : player2;
+    if (
+        currentPlayerObject.character.charName === "Zé Madruga" &&
+        currentPlayerObject.character.powerIsOn
+    )
+        this.isOnZeMadrugaPower = true;
 
     if (isStickAnimating) {
         const elapsed = now - stickAnimationStart;
@@ -219,15 +361,17 @@ function update() {
 
         if (t >= 1) {
             ball1.applyForce(queuedForce);
+
+            SoundManager.playSfx("shot");
+
             isStickAnimating = false;
             this.stickLocked = false;
             this.powerValue = 0;
             this.stickDistance = 20;
             this.powerSlider.y = this.powerBar.y - this.powerBar.height / 2;
-            updateStickPosition(this, this.input.activePointer);
 
-            shotTaken = true; // A shot was triggered
-            shotStarted = false; // … but we haven’t moved the ball yet
+            shotTaken = true;
+            shotStarted = false;
         }
     }
 
@@ -238,58 +382,58 @@ function update() {
 }
 
 function checkVictory(scene, pocketedBall) {
-    if (!colorAssigned) return; // ainda não temos cores atribuídas
-
-    const playerColor = getPlayerColor(currentPlayer);
     const opponent = currentPlayer === 1 ? 2 : 1;
-
-    // Contar quantas bolas da cor do jogador ainda estão na mesa
-    const remainingBalls = balls.filter(
-        (b) => b.color === (playerColor === "vermelho" ? "ballRed" : "ballBlue")
-    );
+    let winner = null;
+    let loser = null;
 
     if (pocketedBall.texture.key === "ballYellow") {
-        if (remainingBalls.length === 0) {
-            showVictoryText(scene, `Jogador ${currentPlayer} venceu!`);
+        if (!colorAssigned) {
+            winner = opponent;
+            loser = currentPlayer;
         } else {
-            showVictoryText(scene, `Jogador ${opponent} venceu!`);
+            const playerColor = getPlayerColor(currentPlayer);
+            const remainingPlayerBalls = balls.filter(
+                (b) => b.active && b.texture.key !== "ballWhite" && b.texture.key !== "ballYellow" &&
+                       b.color === (playerColor === "vermelho" ? "ballRed" : "ballBlue")
+            ).length;
+
+            if (remainingPlayerBalls === 0) {
+                winner = currentPlayer;
+                loser = opponent;
+            } else {
+                winner = opponent;
+                loser = currentPlayer;
+            }
         }
+    }
+
+    if (winner !== null) {
+        scene.input.enabled = false;
+        scene.scene.start('EndGameScene', { 
+            winner: winner,
+            loser: loser,
+            player1Data: player1,
+            player2Data: player2
+        });
+        return;
     }
 }
 
-function showVictoryText(scene, message) {
-    const victoryText = scene.add
-        .text(620, 316, message, {
-            fontSize: "48px",
-            fill: "#fff",
-            backgroundColor: "#000",
-            padding: { x: 20, y: 10 },
-            align: "center",
-        })
-        .setOrigin(0.5)
-        .setDepth(10);
-
-    scene.input.enabled = false; // Bloqueia entrada após vitória
-}
-
 function resetCueBall(scene) {
-    // Remove a bola branca atual da física e da cena
     scene.matter.world.remove(ball1.body);
     ball1.destroy();
 
-    // Recria a bola branca na posição inicial
     ball1 = scene.matter.add.image(
         ball1InitialPosition.x,
         ball1InitialPosition.y,
         "ballWhite"
     );
     ball1.setCircle(20);
+    ball1.setBounce(0.8);
     ball1.setFriction(0);
-    ball1.setFrictionAir(0.0025);
-    ball1.setBounce(0.9);
+    ball1.setFrictionAir(0.0085);
     ball1.isWhite = true;
 
-    // Atualiza o array balls: remove qualquer referência duplicada e adiciona no início
     balls = balls.filter((b) => !b.isWhite);
     balls.unshift(ball1);
 }

@@ -3,20 +3,37 @@
     <head>
         <meta charset="UTF-8" />
         <title>9BallPool</title>
-        <link rel="icon" href="assets/favicon.ico">
+        <link rel="icon" href="assets/arts/favicon.ico" />
         <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+
+        <!-- Utils -->
+        <script src="utils/soundManager.js"></script>
+
+        <!-- Game Objects -->
         <script src="gameObjects/createBalls.js"></script>
-        <script src="gameObjects/createrPockets.js"></script>
+        <script src="gameObjects/createPockets.js"></script>
         <script src="gameObjects/createStick.js"></script>
         <script src="gameObjects/createPowerBar.js"></script>
         <script src="gameObjects/createBorders.js"></script>
         <script src="gameObjects/createPlayer.js"></script>
+
+        <!-- Scenes -->
+        <script src="scenes/preloaderScene.js"></script>
+        <script src="scenes/menuScene.js"></script>
+        <script src="scenes/selectCharacterScene.js"></script>
+        <script src="scenes/loreScene.js"></script>
         <script src="scenes/mainScene.js"></script>
+        <script src="scenes/endGameScene.js"></script>
+
+        <!-- Game -->
         <script src="game.js"></script>
+
         <style>
             body {
+                display: flex;
+                justify-content: center;
                 margin: 0;
-                background-color: #333;
+                background-color: #011b17;
             }
         </style>
     </head>
