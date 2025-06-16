@@ -26,7 +26,7 @@ function getCharacterAssetKeysForEndGame(charName) {
             portraitKey = 'portraitZeMadruga';
             nameImageKey = 'nameZeMadruga';
             break;
-        case 'huguinho pinduca':
+        case 'huguinho':
             portraitKey = 'portraitHuguinho';
             nameImageKey = 'nameHuguinho';
             break;
