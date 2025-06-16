@@ -2,7 +2,7 @@ function createBalls(scene) {
     let balls = [];
 
     // 1. Bola branca (cue ball)
-    ball1 = scene.matter.add.image(300, 360, "ballWhite");
+    ball1 = scene.matter.add.image(300, 420, "ballWhite");
     ball1.setCircle(20);
     ball1.setBounce(0.8);
     ball1.setFriction(0);
@@ -12,15 +12,15 @@ function createBalls(scene) {
 
     // 2. Posições da pirâmide (mesmas do seu código)
     const pyramidPositions = [
-        { x: 820, y: 360 }, // 1
-        { x: 854, y: 380 }, // 2
-        { x: 854, y: 340 }, // 3
-        { x: 888, y: 400 }, // 4
-        { x: 888, y: 360 }, // 5 (posição central - bola amarela)
-        { x: 888, y: 320 }, // 6
-        { x: 922, y: 380 }, // 7
-        { x: 922, y: 340 }, // 8
-        { x: 956, y: 360 }, // 9
+        { x: 820, y: 420 }, // 1
+        { x: 854, y: 440 }, // 2
+        { x: 854, y: 400 }, // 3
+        { x: 888, y: 460 }, // 4
+        { x: 888, y: 420 }, // 5 (posição central - bola amarela)
+        { x: 888, y: 380 }, // 6
+        { x: 922, y: 440 }, // 7
+        { x: 922, y: 400 }, // 8
+        { x: 956, y: 420 }, // 9
     ];
 
     // 3. Sempre colocar a bola amarela na posição central (índice 4)
