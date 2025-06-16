@@ -109,7 +109,7 @@ function create() {
     this.load.image("portraitBaianinho", "assets/arts/baianinho-select-screen.png");
     this.load.image("portraitDonaLurdes", "assets/arts/dona-lurdes-select-screen.png");
     this.load.image("portraitZeMadruga", "assets/arts/ze-madruga-select-screen.png");
-    this.load.image("portraitHuguinho", "assets/arts/huguinho-select-screen2.png");
+    this.load.image("portraitHuguinho", "assets/arts/huguinho-select-screen.png");
     this.load.image("loreButtonImg", "assets/arts/lore-button.png");
     this.load.image("startButtonImg", "assets/arts/start-button.png");
     this.load.image('titleEndGame', 'assets/arts/end-game-text.png');
