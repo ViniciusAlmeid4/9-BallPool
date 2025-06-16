@@ -64,6 +64,7 @@ function create() {
     this.load.audio("jukebox3", "assets/audio/jukebox3.mp3");
     this.load.audio("jukebox4", "assets/audio/jukebox4.mp3");
     this.load.audio("jukebox5", "assets/audio/jukebox5.mp3");
+    this.load.audio('victoryMusic', 'assets/audio/victoryMusic.mp3');
 
     // Imagens
     this.load.image("playBtn", "assets/images/playButton.png");
@@ -102,6 +103,18 @@ function create() {
     this.load.image("player2-select", "assets/arts/player2-select.png");
     this.load.image("abilityUseBtn", "assets/arts/ability-use-button.png");
     this.load.image("abilityUsedBtn", "assets/arts/ability-used-button.png");
+    this.load.image("titleSelectChar", "assets/arts/escolha-personagem.png");
+    this.load.image("frameWhite", "assets/arts/border-character-menu.png");
+    this.load.image("frameYellow", "assets/arts/border-selected-character-menu.png");
+    this.load.image("portraitBaianinho", "assets/arts/baianinho-select-screen.png");
+    this.load.image("portraitDonaLurdes", "assets/arts/dona-lurdes-select-screen.png");
+    this.load.image("portraitZeMadruga", "assets/arts/ze-madruga-select-screen.png");
+    this.load.image("portraitHuguinho", "assets/arts/huguinho-select-screen2.png");
+    this.load.image("loreButtonImg", "assets/arts/lore-button.png");
+    this.load.image("startButtonImg", "assets/arts/start-button.png");
+    this.load.image('titleEndGame', 'assets/arts/end-game-text.png');
+    this.load.image('statusVenceuImg', 'assets/arts/win-end-game.png');
+    this.load.image('mainMenuBtnImg', 'assets/arts/menu-button.png');
 
     this.load.start();
 }

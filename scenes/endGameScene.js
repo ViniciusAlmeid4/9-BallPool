@@ -1,14 +1,3 @@
-function preload() {
-    this.load.image('titleEndGame', 'assets/arts/end-game-text.png');
-    this.load.image('statusVenceuImg', 'assets/arts/win-end-game.png');
-
-    this.load.image('mainMenuBtnImg', 'assets/arts/menu-button.png');
-
-    this.load.audio('clickSfx', 'assets/soundEffects/click.wav');
-    this.load.audio('victoryMusic', 'assets/audio/victoryMusic.mp3');
-}
-
-
 function getCharacterAssetKeysForEndGame(charName) {
     let portraitKey = ''; 
     let nameImageKey = '';   
@@ -16,19 +5,19 @@ function getCharacterAssetKeysForEndGame(charName) {
     switch (charName.toLowerCase()) {
         case 'baianinho':
             portraitKey = 'portraitBaianinho';
-            nameImageKey = 'nameBaianinho';
+            nameImageKey = 'baianinho-text';
             break;
         case 'dona lurdes':
             portraitKey = 'portraitDonaLurdes';
-            nameImageKey = 'nameDonaLurdes';
+            nameImageKey = 'donaLurdes-text';
             break;
         case 'zé madruga':
             portraitKey = 'portraitZeMadruga';
-            nameImageKey = 'nameZeMadruga';
+            nameImageKey = 'zeMadruga-text';
             break;
         case 'huguinho':
             portraitKey = 'portraitHuguinho';
-            nameImageKey = 'nameHuguinho';
+            nameImageKey = 'huguinho-text';
             break;
     }
     return { portraitKey, nameImageKey };
@@ -142,6 +131,5 @@ function create(data) {
 
 const endGameScene = {
     key: 'EndGameScene',
-    preload: preload,
     create: create
 };
