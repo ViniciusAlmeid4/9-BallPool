@@ -6,12 +6,12 @@ function create() {
     const screenCenterX = this.cameras.main.width / 2;
     const screenCenterY = this.cameras.main.height / 2;
 
-    this.add.image(screenCenterX, screenCenterY - 100, "logo").setScale(0.4);
+    this.add.image(screenCenterX, screenCenterY - 50, "logo").setScale(0.45);
 
     const progressBarWidth = 320;
     const progressBarHeight = 50;
     const progressBarX = screenCenterX - progressBarWidth / 2;
-    const progressBarY = screenCenterY + 25;
+    const progressBarY = screenCenterY + 90;
 
     const progressBox = this.add.graphics();
     progressBox.fillStyle(0x222222, 0.8);
@@ -25,7 +25,7 @@ function create() {
     const progressBar = this.add.graphics();
 
     const loadingText = this.add
-        .text(screenCenterX, screenCenterY + 100, "Carregando... 0%", {
+        .text(screenCenterX, screenCenterY + 150, "Carregando... 0%", {
             fontSize: "20px",
             fill: "#ffffff",
         })
@@ -97,7 +97,9 @@ function create() {
     this.load.image("redFrame", "assets/arts/redFrame.png");
     this.load.image("defaultFrame", "assets/arts/defaultFrame.png");
     this.load.image("player1", "assets/arts/player1.png");
+    this.load.image("player1-select", "assets/arts/player1-select.png");
     this.load.image("player2", "assets/arts/player2.png");
+    this.load.image("player2-select", "assets/arts/player2-select.png");
 
     this.load.start();
 }

@@ -211,7 +211,7 @@ function create() {
         const pos = cardPositions[index];
         const cardContainer = sceneContext.add.container(pos.x, pos.y);
 
-        const baseContainerScale = 0.8;
+        const baseContainerScale = 1.1;
         cardContainer.setScale(baseContainerScale);
 
         const frameWhiteImg = sceneContext.add
